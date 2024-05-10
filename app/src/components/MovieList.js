@@ -7,7 +7,9 @@ const Movies = () => {
     useEffect(() => {
         api.get('http://localhost:8888/api/v1/movie')
             .then(response => {
-                setMovies(response.data);
+                console.log("Respuesta completa del servidor:", response); // Verifica cómo es el objeto de respuesta
+                console.log("Datos de películas recibidos:", response.data.data); // Observa los datos específicos
+                setMovies(response.data.data);
             })
             .catch(error => {
                 console.error('Error fetching movies:', error);
