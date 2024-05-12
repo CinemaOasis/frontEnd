@@ -1,0 +1,18 @@
+/* Estilos para el contenedor del carrusel */
+.carrusel-contenedor {
+    display: block;
+    justify-content: center;  /* Centra las imágenes en el contenedor */
+    padding: 0px 60px 30px 60px;  /* Espacio entre las imágenes */
+    overflow-x: auto;  /* Permite desplazar el carrusel horizontalmente */
+    visibility: visible;
+
+
+}
+
+  /* Estilos para las imágenes (pósteres) */
+.carrusel-contenedor img {
+  padding: 20px 60px 0 60px;
+    width: 290px;  /* Ancho fijo para todas las imágenes */
+    height: 420px;  /* Alto fijo para mantener la proporción */
+    object-fit: cover;  /* Asegura que las imágenes cubran el espacio sin deformarse */
+}

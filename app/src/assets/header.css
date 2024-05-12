@@ -1,0 +1,55 @@
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    max-width: 100%;
+    height: auto;
+
+}
+
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.logo {
+    width: 410px;
+    height: 135px;
+
+}
+
+.barraBuscar input {
+    margin-top: 55px;
+    height: 48px;
+    width: 350px;
+    border-radius: 10px;
+    max-width: 100%;
+
+}
+
+.barraBuscar button {
+    background:none ;
+    border: none;
+    margin-top: 55px;
+    height: 48px;
+    width: 56px;
+}
+
+.loginButton button {
+    margin-left: 10px;
+    background-color: #85AA30;
+    border-radius: 15px;
+    width: 175px;
+    height: 42px;
+    color:white;
+    font-size: 20px;
+}
+
+.headerNav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    width: 1280px;
+}
