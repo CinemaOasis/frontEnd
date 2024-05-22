@@ -13,6 +13,9 @@ export default App;*/
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homePage';
+import LoginForm from '../src/components/loginForm';
+import RegisterForm from '../src/components/registroForm';
+import AdminPage from './components/adminPage';
 //import './assets/movieCarrusel.css';
 
 function App() {
@@ -20,6 +23,9 @@ function App() {
     <Router>
       <Routes>
         <Route path='/' element={<HomePage />} /> 
+        <Route path='/loginForm' element={<LoginForm />} /> 
+        <Route path='/registroForm' element={<RegisterForm />} /> 
+        <Route path='/adminPage' element={<AdminPage />} /> 
       </Routes>
     </Router>
   );

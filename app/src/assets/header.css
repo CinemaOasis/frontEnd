@@ -21,20 +21,36 @@ header {
 }
 
 .barraBuscar input {
-    margin-top: 55px;
+    margin-top: 0px;
     height: 48px;
     width: 350px;
-    border-radius: 10px;
-    max-width: 100%;
+    border-radius: 10px 0px 0px 10px;
+    font-size: 25px;
+    border: 1px #EE2835 solid;
+    border-right: solid transparent;
+    vertical-align: middle;
+    color: black;
+    outline: none;
 
 }
 
 .barraBuscar button {
-    background:none ;
-    border: none;
+    background: #85AA30 ;
+    border-radius: 0px 10px 10px 0px;
+    border: 1px #85AA30 solid;
+    height: 52px;
+    width: 60px;
+    vertical-align: middle;
+    border:  none;
+    position: absolute;
+    right: -4em;
+    
+}
+.barraBuscar {
+    display: inline-block;
+    vertical-align: middle;
     margin-top: 55px;
-    height: 48px;
-    width: 56px;
+    position: relative;
 }
 
 .loginButton button {
@@ -45,11 +61,15 @@ header {
     height: 42px;
     color:white;
     font-size: 20px;
+    display: block;
+    margin: 22px;
+    border: none;
 }
 
 .headerNav a {
-    margin: 0 15px;
+    margin: 20px 30px 20px 30px;
     text-decoration: none;
-    color: black;
-    width: 1280px;
+    color:#EE2835;
+    font-size: 25px;
+    font-weight: bold;
 }

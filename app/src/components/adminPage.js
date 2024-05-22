@@ -6,7 +6,7 @@ import lupaBuscar from '../assets/lupaBuscar (2).png'
 
 
 
-const Header = () => {
+const AdminPage = () => {
     let navigate = useNavigate();
 
     const handleLoginClick = () => {
@@ -27,8 +27,8 @@ const Header = () => {
                     </button>
                 </div>
                 <div className='loginButton'>
-                    <button onClick={handleLoginClick}>Iniciar sesión</button>
-                    <button onClick={handleRegisterClick} >Registrarse</button>
+                    <button onClick={handleLoginClick}>Admin</button>
+                    <button onClick={handleRegisterClick} >admin</button>
                 </div>
             </div>
 
@@ -42,4 +42,4 @@ const Header = () => {
     );
 }
 
-export default Header;
+export default AdminPage;
