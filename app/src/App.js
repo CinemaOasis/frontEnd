@@ -16,6 +16,9 @@ import HomePage from './pages/homePage';
 import LoginForm from '../src/components/loginForm';
 import RegisterForm from '../src/components/registroForm';
 import AdminPage from './components/adminPage';
+import ConfirmEmail from './components/confirmEmail';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 //import './assets/movieCarrusel.css';
 
 function App() {
@@ -26,6 +29,7 @@ function App() {
         <Route path='/loginForm' element={<LoginForm />} /> 
         <Route path='/registroForm' element={<RegisterForm />} /> 
         <Route path='/adminPage' element={<AdminPage />} /> 
+        <Route path="/confirm" element={<ConfirmEmail />} />
       </Routes>
     </Router>
   );

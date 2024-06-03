@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
@@ -18,11 +18,11 @@ const RegisterForm = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8888/api/v1/emailauth/register', { name, email, password });
+      const response = await api.post('http://localhost:8888/api/v1/emailauth/register', { name, email, password });
       setMessage(response.data.message);
       navigate('/confirmation');  // Redirige a una página de confirmación
     } catch (error) {
-      setError('Failed to register');
+      setError(error.response?.data?.message || 'Failed to register');
     }
   };
 

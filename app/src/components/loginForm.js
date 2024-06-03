@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-    
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,11 +15,16 @@ const LoginForm = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8888/api/v1/emailauth/login', { email, password });
+      const response = await api.post('http://localhost:8888/api/v1/emailauth/login', { email, password });
       localStorage.setItem('token', response.data.token);
-      navigate('/adminPage'); // Redirect to dashboard based on role
+      const userRole = response.data.role;  // Assuming the backend returns the user role
+      if (userRole === 'admin') {
+        navigate('/adminPage');
+      } else {
+        navigate('/adminPage');
+      }
     } catch (error) {
-      setError('Failed to login');
+      setError(error.response?.data?.message || 'Failed to login');
     }
   };
 
