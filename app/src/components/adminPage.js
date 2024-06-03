@@ -13,8 +13,23 @@ const AdminPage = () => {
   const movieDetailsRef = useRef(null);
 
   useEffect(() => {
+    handleLogin();
     fetchCartelera();
   }, []);
+
+  const handleLogin = async () => {
+    try {
+      const response = await api.post('/emailauth/login', {
+        email: 'wanderdj77@gmail.com',
+        password: '123456789',
+      });
+      const { token } = response.data.data;
+      localStorage.setItem('token', token);
+      console.log('Logged in successfully');
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
+  };
 
   const handleSearch = async () => {
     try {
@@ -86,6 +101,12 @@ const AdminPage = () => {
       movieDetailsRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    if (selectedMovie && movieDetailsRef.current) {
+      movieDetailsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedMovie]);
 
   return (
     <Container className="mt-5">
@@ -172,7 +193,7 @@ const AdminPage = () => {
               ))}
             </ListGroup>
           ) : (
-            <p>No functions available</p>
+            <p>La cartelera está vacía</p>
           )}
         </Col>
       </Row>
