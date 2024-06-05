@@ -185,7 +185,7 @@ const AdminPage = () => {
             <ListGroup>
               {cartelera.map((funcion) => (
                 <ListGroup.Item key={funcion.id}>
-                  {funcion.movieName} - Sala: {funcion.salaId} - Hora: {funcion.startTime} - Estado: {funcion.status}
+                  {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Hora: {funcion.startTime} - Estado: {funcion.status}
                   <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
                     Eliminar
                   </Button>
@@ -193,7 +193,7 @@ const AdminPage = () => {
               ))}
             </ListGroup>
           ) : (
-            <p>La cartelera está vacía</p>
+            <p>No functions available</p>
           )}
         </Col>
       </Row>
