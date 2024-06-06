@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card, ListGroup, Alert } from 'react-bootstrap';
 import api from '../services/api';
 
 const AdminPage = () => {
@@ -9,6 +9,7 @@ const AdminPage = () => {
   const [salaId, setSalaId] = useState('');
   const [startTime, setStartTime] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [cartelera, setCartelera] = useState([]);
   const movieDetailsRef = useRef(null);
 
@@ -25,6 +26,7 @@ const AdminPage = () => {
       });
       const { token } = response.data.data;
       localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       console.log('Logged in successfully');
     } catch (error) {
       console.error('Error logging in:', error);
@@ -49,40 +51,50 @@ const AdminPage = () => {
       });
       if (response.data && response.data.data) {
         setSelectedMovie({ ...selectedMovie, dbId: response.data.data.id });
+        setSuccessMessage('Película agregada a la base de datos correctamente');
       }
     } catch (error) {
-      console.error('Error adding movie to database:', error);
-      setErrorMessage('Error adding movie to database');
+      if (error.response && error.response.status === 409) {
+        const existingMovie = error.response.data.data; // Aquí debería devolver el movieId existente
+        setSelectedMovie({ ...selectedMovie, dbId: existingMovie.id });
+        setSuccessMessage('Esta película ya está registrada en tu sistema');
+      } else {
+        console.error('Error adding movie to database:', error);
+        setErrorMessage('Error agregando la película a la base de datos');
+      }
     }
   };
 
   const handleAddToCartelera = async () => {
     if (!selectedMovie || !selectedMovie.dbId) {
-      setErrorMessage('Please select a movie and add it to the database first');
+      setErrorMessage('Por favor, selecciona una película y agrégala a la base de datos primero');
       return;
     }
 
     try {
       const requestData = {
-        movieId: selectedMovie.dbId,
+        movieId: selectedMovie.dbId, // Usando el dbId correcto
         salaId: parseInt(salaId, 10),
         startTime,
         status: 'Programada',
       };
-      const response = await api.post('/funcion', requestData);
+      await api.post('/funcion', requestData);
+      setSuccessMessage('Función agregada a la cartelera correctamente');
       fetchCartelera(); // Fetch the updated cartelera
     } catch (error) {
       console.error('Error adding function:', error);
-      setErrorMessage('Error adding function');
+      setErrorMessage('Error agregando la función');
     }
   };
 
   const handleDeleteFromCartelera = async (funcionId) => {
     try {
       await api.delete(`/funcion/${funcionId}`);
+      setSuccessMessage('Función eliminada correctamente');
       fetchCartelera(); // Fetch the updated cartelera
     } catch (error) {
       console.error('Error deleting function:', error);
+      setErrorMessage('Error eliminando la función');
     }
   };
 
@@ -115,6 +127,24 @@ const AdminPage = () => {
           <h1>Admin Page</h1>
         </Col>
       </Row>
+      {errorMessage && (
+        <Row>
+          <Col>
+            <Alert variant="danger" onClose={() => setErrorMessage('')} dismissible>
+              {errorMessage}
+            </Alert>
+          </Col>
+        </Row>
+      )}
+      {successMessage && (
+        <Row>
+          <Col>
+            <Alert variant="success" onClose={() => setSuccessMessage('')} dismissible>
+              {successMessage}
+            </Alert>
+          </Col>
+        </Row>
+      )}
       <Row className="mt-4">
         <Col md={8}>
           <Form.Group>
