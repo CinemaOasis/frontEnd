@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Button, Container, Row, Col, Card, ListGroup, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 
 const AdminPage = () => {
@@ -8,8 +10,6 @@ const AdminPage = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [salaId, setSalaId] = useState('');
   const [startTime, setStartTime] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [cartelera, setCartelera] = useState([]);
   const movieDetailsRef = useRef(null);
 
@@ -30,6 +30,7 @@ const AdminPage = () => {
       console.log('Logged in successfully');
     } catch (error) {
       console.error('Error logging in:', error);
+      toast.error('Error logging in');
     }
   };
 
@@ -41,6 +42,7 @@ const AdminPage = () => {
       setSearchResults(response.data.data);
     } catch (error) {
       console.error('Error searching movies:', error);
+      toast.error('Error searching movies');
     }
   };
 
@@ -51,23 +53,23 @@ const AdminPage = () => {
       });
       if (response.data && response.data.data) {
         setSelectedMovie({ ...selectedMovie, dbId: response.data.data.id });
-        setSuccessMessage('Película agregada a la base de datos correctamente');
+        toast.success('Película agregada a la base de datos correctamente');
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        const existingMovie = error.response.data.data; // Aquí debería devolver el movieId existente
+        const existingMovie = error.response.data.data; // Suponiendo que se devuelve la película existente
         setSelectedMovie({ ...selectedMovie, dbId: existingMovie.id });
-        setSuccessMessage('Esta película ya está registrada en tu sistema');
+        toast.info('Esta película ya está registrada en tu sistema');
       } else {
         console.error('Error adding movie to database:', error);
-        setErrorMessage('Error agregando la película a la base de datos');
+        toast.error('Error agregando la película a la base de datos');
       }
     }
   };
 
   const handleAddToCartelera = async () => {
     if (!selectedMovie || !selectedMovie.dbId) {
-      setErrorMessage('Por favor, selecciona una película y agrégala a la base de datos primero');
+      toast.error('Por favor, selecciona una película y agrégala a la base de datos primero');
       return;
     }
 
@@ -79,22 +81,22 @@ const AdminPage = () => {
         status: 'Programada',
       };
       await api.post('/funcion', requestData);
-      setSuccessMessage('Función agregada a la cartelera correctamente');
+      toast.success('Función agregada a la cartelera correctamente');
       fetchCartelera(); // Fetch the updated cartelera
     } catch (error) {
       console.error('Error adding function:', error);
-      setErrorMessage('Error agregando la función');
+      toast.error('Error agregando la función');
     }
   };
 
   const handleDeleteFromCartelera = async (funcionId) => {
     try {
       await api.delete(`/funcion/${funcionId}`);
-      setSuccessMessage('Función eliminada correctamente');
+      toast.success('Función eliminada correctamente');
       fetchCartelera(); // Fetch the updated cartelera
     } catch (error) {
       console.error('Error deleting function:', error);
-      setErrorMessage('Error eliminando la función');
+      toast.error('Error eliminando la función');
     }
   };
 
@@ -104,6 +106,7 @@ const AdminPage = () => {
       setCartelera(response.data.data);
     } catch (error) {
       console.error('Error fetching cartelera:', error);
+      toast.error('Error fetching cartelera');
     }
   };
 
@@ -122,29 +125,12 @@ const AdminPage = () => {
 
   return (
     <Container className="mt-5">
+      <ToastContainer />
       <Row>
         <Col>
           <h1>Admin Page</h1>
         </Col>
       </Row>
-      {errorMessage && (
-        <Row>
-          <Col>
-            <Alert variant="danger" onClose={() => setErrorMessage('')} dismissible>
-              {errorMessage}
-            </Alert>
-          </Col>
-        </Row>
-      )}
-      {successMessage && (
-        <Row>
-          <Col>
-            <Alert variant="success" onClose={() => setSuccessMessage('')} dismissible>
-              {successMessage}
-            </Alert>
-          </Col>
-        </Row>
-      )}
       <Row className="mt-4">
         <Col md={8}>
           <Form.Group>
