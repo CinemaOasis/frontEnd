@@ -123,6 +123,14 @@ const AdminPage = () => {
     }
   }, [selectedMovie]);
 
+  const formatTime = (minutes) => {
+    const hours24 = Math.floor(minutes / 60);
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+    const mins = (minutes % 60).toString().padStart(2, '0');
+    const ampm = hours24 >= 12 ? 'PM' : 'AM';
+    return `${hours12}:${mins} ${ampm}`;
+  };
+
   return (
     <Container className="mt-5">
       <ToastContainer />
@@ -201,7 +209,7 @@ const AdminPage = () => {
             <ListGroup>
               {cartelera.map((funcion) => (
                 <ListGroup.Item key={funcion.id}>
-                  {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Hora: {funcion.startTime} - Estado: {funcion.status}
+                  {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status}
                   <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
                     Eliminar
                   </Button>
