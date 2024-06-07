@@ -1,0 +1,132 @@
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    max-width: 100%;
+    height: auto;
+}
+
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.logo {
+    width: 410px;
+    height: 135px;
+}
+
+.barraBuscar input {
+    margin-top: 0px;
+    height: 48px;
+    width: 350px;
+    border-radius: 10px 0px 0px 10px;
+    font-size: 25px;
+    border: 1px #EE2835 solid;
+    border-right: solid transparent;
+    vertical-align: middle;
+    color: black;
+    outline: none;
+}
+
+.barraBuscar button {
+    background: #85AA30;
+    border-radius: 0px 10px 10px 0px;
+    border: 1px #85AA30 solid;
+    height: 52px;
+    width: 60px;
+    vertical-align: middle;
+    border: none;
+    position: absolute;
+    right: -4em;
+}
+
+.barraBuscar {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 55px;
+    position: relative;
+}
+
+.loginButton button {
+    margin-left: 10px;
+    background-color: #85AA30;
+    border-radius: 15px;
+    width: 175px;
+    height: 42px;
+    color: white;
+    font-size: 20px;
+    display: block;
+    margin: 22px;
+    border: none;
+}
+
+.profileMenu {
+    position: relative;
+}
+
+.profileIcon {
+    cursor: pointer;
+    position: relative;
+    margin-top: 55px;
+}
+
+.profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.menu {
+    position: absolute;
+    top: 70px; /* Ajusta la posición según sea necesario */
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+}
+
+.menu p {
+    margin-bottom: 10px;
+}
+
+.menu input[type="file"] {
+    display: none;
+}
+
+.menu label {
+    display: block;
+    cursor: pointer;
+    margin-bottom: 10px;
+    color: blue;
+}
+
+.menu button {
+    margin-top: 10px;
+    background-color: #85AA30;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background-color: #72a326;
+}
+
+.headerNav a {
+    margin: 20px 30px 20px 30px;
+    text-decoration: none;
+    color: #EE2835;
+    font-size: 25px;
+    font-weight: bold;
+}
