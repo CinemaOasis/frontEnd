@@ -73,6 +73,11 @@ const AdminPage = () => {
       return;
     }
 
+    if (!salaId || !startTime) {
+      toast.error('Todos los campos son obligatorios');
+      return;
+    }
+
     try {
       const requestData = {
         movieId: selectedMovie.dbId, // Usando el dbId correcto
@@ -123,12 +128,12 @@ const AdminPage = () => {
     }
   }, [selectedMovie]);
 
-  const formatTime = (minutes) => {
-    const hours24 = Math.floor(minutes / 60);
-    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
-    const mins = (minutes % 60).toString().padStart(2, '0');
-    const ampm = hours24 >= 12 ? 'PM' : 'AM';
-    return `${hours12}:${mins} ${ampm}`;
+  const formatTime = (time) => {
+    const hours = Math.floor(time / 60);
+    const minutes = time % 60;
+    const hours12 = hours % 12 || 12;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
   };
 
   return (
