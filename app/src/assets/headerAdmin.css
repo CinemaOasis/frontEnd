@@ -42,7 +42,6 @@ header {
     position: absolute;
     right: -4em;
 }
-
 .barraBuscar {
     display: inline-block;
     vertical-align: middle;
@@ -50,27 +49,13 @@ header {
     position: relative;
 }
 
-.loginButton button {
-    margin-left: 10px;
-    background-color: #85AA30;
-    border-radius: 15px;
-    width: 175px;
-    height: 42px;
-    color: white;
-    font-size: 20px;
-    display: block;
-    margin: 22px;
-    border: none;
-}
-
 .profileMenu {
     position: relative;
+    display: inline-block;
 }
 
 .profileIcon {
     cursor: pointer;
-    position: relative;
-    margin-top: 55px;
 }
 
 .profileImage {
@@ -80,47 +65,46 @@ header {
 }
 
 .menu {
-    position: absolute;
-    top: 70px; /* Ajusta la posición según sea necesario */
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    z-index: 1000;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 200px;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 
 .menu p {
-    margin-bottom: 10px;
-}
-
-.menu input[type="file"] {
-    display: none;
+    margin: 0;
+    padding: 8px 16px;
 }
 
 .menu label {
-    display: block;
+    margin: 8px 0;
+    padding: 8px 16px;
     cursor: pointer;
-    margin-bottom: 10px;
-    color: blue;
+    background-color: #85AA30;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.menu input {
+    display: none;
 }
 
 .menu button {
-    margin-top: 10px;
-    background-color: #85AA30;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    margin: 8px 0;
+    padding: 8px 16px;
     cursor: pointer;
-}
-
-.menu button:hover {
-    background-color: #72a326;
+    background-color: #EE2835;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
 }
 
 .headerNav a {

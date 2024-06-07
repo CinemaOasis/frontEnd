@@ -6,7 +6,7 @@ import logo from '../assets/Cinema (500 x 200 px).png';
 import '../assets/headerAdmin.css';
 import lupaBuscar from '../assets/lupaBuscar (2).png';
 
-const Header = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
+const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
     let navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
@@ -81,13 +81,12 @@ const Header = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
             </div>
 
             <nav className="headerNav">
-                <Link to="/">Inicio</Link>
-                <Link to="/estrenos">Estrenos</Link>
-                <Link to="/proximamente">Próximamente</Link>
-                <Link to="/contacto">Contacto</Link>
+                <Link to="/adminPage">Cartelera</Link>
+                <Link to="/adminEstrenos">Estrenos</Link>
+                <Link to="/adminProximamente">Próximamente</Link>
             </nav>
         </header>
     );
 }
 
-export default Header;
+export default AdminHeader;

@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootst
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
-import Header from '../components/adminHeader';  // Ajusta la ruta según sea necesario
+import AdminHeader from '../components/adminHeader';  // Ajusta la ruta según sea necesario
 
 const AdminPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +12,7 @@ const AdminPage = () => {
   const [salaId, setSalaId] = useState('');
   const [startTime, setStartTime] = useState('');
   const [cartelera, setCartelera] = useState([]);
+  const [category, setCategory] = useState('Estrenos'); // Nueva categoría
   const movieDetailsRef = useRef(null);
   const [userName, setUserName] = useState('Admin');  // Asigna un nombre de usuario por defecto
 
@@ -82,6 +83,7 @@ const AdminPage = () => {
         salaId: parseInt(salaId, 10),
         startTime,
         status: 'Programada',
+        category,
       };
       await api.post('/funcion', requestData);
       toast.success('Función agregada a la cartelera correctamente');
@@ -140,7 +142,7 @@ const AdminPage = () => {
 
   return (
     <div>
-      <Header 
+      <AdminHeader 
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 
         handleSearch={handleSearch} 
@@ -150,7 +152,7 @@ const AdminPage = () => {
         <ToastContainer />
         <Row>
           <Col>
-            <h1>Admin Page</h1>
+            <h1>Cartelera</h1>
           </Col>
         </Row>
         <Row className="mt-4">
@@ -191,6 +193,17 @@ const AdminPage = () => {
                       onChange={(e) => setStartTime(e.target.value)}
                     />
                   </Form.Group>
+                  <Form.Group className="mt-3">
+                    <Form.Label>Categoría</Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="Estrenos">Estrenos</option>
+                      <option value="Proximamente">Próximamente</option>
+                    </Form.Control>
+                  </Form.Group>
                   <Button className="mt-2" onClick={handleAddToCartelera}>
                     Crear Cartelera
                   </Button>
@@ -206,7 +219,7 @@ const AdminPage = () => {
               <ListGroup>
                 {cartelera.map((funcion) => (
                   <ListGroup.Item key={funcion.id}>
-                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status}
+                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} - Categoría: {funcion.category}
                     <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
                       Eliminar
                     </Button>
