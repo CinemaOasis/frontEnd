@@ -68,13 +68,8 @@ const AdminPage = () => {
   };
 
   const handleAddToCartelera = async () => {
-    if (!selectedMovie || !selectedMovie.dbId) {
-      toast.error('Por favor, selecciona una película y agrégala a la base de datos primero');
-      return;
-    }
-
-    if (!salaId || !startTime) {
-      toast.error('Todos los campos son obligatorios');
+    if (!selectedMovie || !selectedMovie.dbId || !salaId || !startTime) {
+      toast.error('Por favor, completa todos los campos antes de agregar a la cartelera');
       return;
     }
 
@@ -90,7 +85,11 @@ const AdminPage = () => {
       fetchCartelera(); // Fetch the updated cartelera
     } catch (error) {
       console.error('Error adding function:', error);
-      toast.error('Error agregando la función');
+      if (error.response && error.response.status === 400 && error.response.data.message.includes('horario seleccionado')) {
+        toast.error('Revisa las demás funciones, puede que los horarios estén chocando');
+      } else {
+        toast.error('Error agregando la función');
+      }
     }
   };
 
@@ -128,12 +127,12 @@ const AdminPage = () => {
     }
   }, [selectedMovie]);
 
-  const formatTime = (time) => {
-    const hours = Math.floor(time / 60);
-    const minutes = time % 60;
-    const hours12 = hours % 12 || 12;
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  const formatTime = (minutes) => {
+    const hours24 = Math.floor(minutes / 60);
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+    const mins = (minutes % 60).toString().padStart(2, '0');
+    const ampm = hours24 >= 12 ? 'PM' : 'AM';
+    return `${hours12}:${mins} ${ampm}`;
   };
 
   return (
