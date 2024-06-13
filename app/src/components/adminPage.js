@@ -12,7 +12,7 @@ const AdminPage = () => {
   const [salaId, setSalaId] = useState('');
   const [startTime, setStartTime] = useState('');
   const [cartelera, setCartelera] = useState([]);
-  const [category, setCategory] = useState('Estrenos'); // Nueva categoría
+  const [isPremiere, setIsPremiere] = useState(false); // Nueva opción para estreno
   const movieDetailsRef = useRef(null);
   const [userName, setUserName] = useState('Admin');  // Asigna un nombre de usuario por defecto
 
@@ -83,7 +83,7 @@ const AdminPage = () => {
         salaId: parseInt(salaId, 10),
         startTime,
         status: 'Programada',
-        category,
+        isPremiere,  // Nueva opción para estreno
       };
       await api.post('/funcion', requestData);
       toast.success('Función agregada a la cartelera correctamente');
@@ -186,23 +186,20 @@ const AdminPage = () => {
                     />
                   </Form.Group>
                   <Form.Group className="mt-2">
-                    <Form.Label>Start Time</Form.Label>
+                    <Form.Label>Hora de Inicio</Form.Label>
                     <Form.Control
                       type="time"
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
                     />
                   </Form.Group>
-                  <Form.Group className="mt-3">
-                    <Form.Label>Categoría</Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="Estrenos">Estrenos</option>
-                      <option value="Proximamente">Próximamente</option>
-                    </Form.Control>
+                  <Form.Group className="mt-2">
+                    <Form.Check 
+                      type="checkbox" 
+                      label="Estreno" 
+                      checked={isPremiere} 
+                      onChange={(e) => setIsPremiere(e.target.checked)} 
+                    />
                   </Form.Group>
                   <Button className="mt-2" onClick={handleAddToCartelera}>
                     Crear Cartelera
@@ -219,7 +216,7 @@ const AdminPage = () => {
               <ListGroup>
                 {cartelera.map((funcion) => (
                   <ListGroup.Item key={funcion.id}>
-                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} - Categoría: {funcion.category}
+                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''}
                     <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
                       Eliminar
                     </Button>
@@ -227,7 +224,7 @@ const AdminPage = () => {
                 ))}
               </ListGroup>
             ) : (
-              <p>No functions available</p>
+              <p>No hay funciones disponibles</p>
             )}
           </Col>
         </Row>

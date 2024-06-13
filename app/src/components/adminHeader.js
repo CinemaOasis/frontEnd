@@ -67,7 +67,9 @@ const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
                     {menuOpen && (
                         <div className='menu'>
                             <p>{userName}</p>
-                            <label htmlFor="profileImageInput">Cambiar foto de perfil</label>
+                            <label htmlFor="profileImageInput" className="profileImageLabel">
+                                Cambiar foto de perfil
+                            </label>
                             <input 
                                 id="profileImageInput" 
                                 type="file" 

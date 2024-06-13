@@ -5,6 +5,8 @@ import LoginForm from '../src/components/loginForm';
 import RegisterForm from '../src/components/registroForm';
 import AdminPage from './components/adminPage';
 import ConfirmEmail from './components/confirmEmail';
+import AdminProximamente from './components/adminProximamente';
+import AdminEstrenos from './components/adminEstrenos';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -15,8 +17,8 @@ function App() {
         <Route path='/loginForm' element={<LoginForm />} /> 
         <Route path='/registroForm' element={<RegisterForm />} /> 
         <Route path='/adminPage' element={<AdminPage />} /> 
-        <Route path='/adminEstrenos' element={<AdminPage category="Estrenos" />} />
-        <Route path='/adminProximamente' element={<AdminPage category="Proximamente" />} />
+        <Route path='/adminEstrenos' element={<AdminEstrenos category="Estrenos" />} />
+        <Route path='/adminProximamente' element={<AdminProximamente/>} />
         <Route path="/confirm" element={<ConfirmEmail />} />
       </Routes>
     </Router>
