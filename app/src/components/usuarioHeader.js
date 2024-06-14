@@ -3,19 +3,20 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/Cinema (500 x 200 px).png';
-import '../assets/headerAdmin.css';
+import '../assets/headerUser.css';
 import lupaBuscar from '../assets/lupaBuscar (2).png';
-import { AuthContext } from '../services/authEmail'; // Asegúrate de que la ruta es correcta
+import { AuthContext } from '../services/authEmail'; // Asegúrate de que la ruta sea correcta
 
-const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
+const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
     let navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
     const { logout } = useContext(AuthContext);
 
     const handleLogout = () => {
+        localStorage.removeItem('token');
         logout(); // Llama a la función de logout del contexto de autenticación
-        navigate('/'); // Redirige a la página de inicio
+        navigate('/');
     };
 
     const handleInputChange = (e) => {
@@ -85,12 +86,13 @@ const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
             </div>
 
             <nav className="headerNav">
-                <Link to="/adminPage">Cartelera</Link>
-                <Link to="/adminEstrenos">Estrenos</Link>
-                <Link to="/adminProximamente">Próximamente</Link>
+                <Link to="/">Inicio</Link>
+                <Link to="/cartelera">Cartelera</Link>
+                <Link to="/estrenos">Estrenos</Link>
+                <Link to="/proximamente">Próximamente</Link>
             </nav>
         </header>
     );
 }
 
-export default AdminHeader;
+export default UserHeader;

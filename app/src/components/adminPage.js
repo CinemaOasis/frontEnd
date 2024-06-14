@@ -151,9 +151,6 @@ const AdminPage = () => {
       <Container className="mt-5">
         <ToastContainer />
         <Row>
-          <Col>
-            <h1>Cartelera</h1>
-          </Col>
         </Row>
         <Row className="mt-4">
           {searchResults.length > 0 && searchResults.map((movie) => (
