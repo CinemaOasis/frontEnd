@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import logo from '../assets/Cinema (500 x 200 px).png'; // Asegúrate de que la ruta del logo es correcta
+import '../assets/registerStyle.css'; // Asegúrate de que la ruta del archivo CSS es correcta
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
@@ -13,61 +15,72 @@ const RegisterForm = () => {
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    setError('');
-    setMessage('');
-
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-
-    // Validar el formato del correo electrónico
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email)) {
-      setError('El correo electrónico no es válido');
-      return;
-    }
-
     try {
       const response = await api.post('http://localhost:8888/api/v1/emailauth/register', { name, email, password });
       setMessage(response.data.message);
       navigate('/confirmation');  // Redirige a una página de confirmación
     } catch (error) {
-      if (error.response?.status === 409) {
-        setError('El correo electrónico ya está registrado');
-      } else {
-        setError(error.response?.data?.message || 'Error al registrar');
-      }
+      setError(error.response?.data?.message || 'Fallo en el registro');
     }
   };
 
   return (
-    <form onSubmit={handleRegister}>
-      <h2>Registro</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      <div>
-        <label>Nombre:</label>
-        <input type="text" value={name} onChange={e => setName(e.target.value)} required />
+    <div className="register-container">
+      <div className="register-content">
+        <div className="register-logo">
+          <img src={logo} alt="Cinema Oasis logo" />
+        </div>
+        <form className="register-form" onSubmit={handleRegister}>
+          <h2>Registro</h2>
+          {error && <p className="error-message">{error}</p>}
+          {message && <p className="success-message">{message}</p>}
+          <div>
+            <label>Nombre:</label>
+            <input 
+              type="text" 
+              value={name} 
+              onChange={e => setName(e.target.value)} 
+              required 
+            />
+          </div>
+          <div>
+            <label>Email:</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              required 
+            />
+          </div>
+          <div>
+            <label>Contraseña:</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)} 
+              required 
+            />
+          </div>
+          <div>
+            <label>Confirmar Contraseña:</label>
+            <input 
+              type="password" 
+              value={confirmPassword} 
+              onChange={e => setConfirmPassword(e.target.value)} 
+              required 
+            />
+          </div>
+          <button type="submit">Registrarse</button>
+          <div className="register-links">
+            <p>¿Ya tienes una cuenta? <Link to="/loginForm">Inicia sesión aquí!</Link></p>
+          </div>
+        </form>
       </div>
-      <div>
-        <label>Correo Electrónico:</label>
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-      </div>
-      <div>
-        <label>Contraseña:</label>
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-      </div>
-      <div>
-        <label>Confirmar Contraseña:</label>
-        <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
-      </div>
-      <button type="submit">Registrarse</button>
-      <div>
-        <p>¿Olvidaste tu contraseña? <a href="/forgot-password">Recupérala aquí</a></p>
-        <p>¿Ya tienes una cuenta? <a href="/loginForm">Inicia sesión</a></p>
-      </div>
-    </form>
+    </div>
   );
 };
 
