@@ -1,0 +1,29 @@
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .welcome-logo {
+    width: 400px; /* Tamaño del logo más grande */
+    margin-bottom: 20px;
+  }
+  
+  .progress-bar {
+    width: 80%;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px; /* Separación entre el logo y la barra */
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: #85AA30; /* Color verde */
+    width: 0;
+  }
+  

@@ -23,7 +23,7 @@ const LoginForm = () => {
       const userData = {
         email: response.data.email,
         name: response.data.name,
-        role: email === 'wanderdj77@gmail.com' ? 'admin' : 'user'
+        role: response.data.email === 'wanderdj77@gmail.com' ? 'admin' : 'user'
       };
       login(userData); // Actualiza el contexto con los datos del usuario
 
@@ -33,10 +33,16 @@ const LoginForm = () => {
         navigate('/');
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setError('Correo electrónico o contraseña incorrectos');
+      if (error.response) {
+        if (error.response.status === 400) {
+          setError('El correo electrónico o la contraseña son incorrectos.');
+        } else if (error.response.status === 401 || error.response.status === 403) {
+          setError('Correo electrónico o contraseña incorrectos');
+        } else {
+          setError(error.response.data.message || 'Error al iniciar sesión');
+        }
       } else {
-        setError(error.response?.data?.message || 'Error al iniciar sesión');
+        setError('Error al iniciar sesión');
       }
     }
   };
