@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 import AdminHeader from '../components/adminHeader';
+import '../assets/homePageStyle.css';
+import { BsFillCameraVideoFill } from 'react-icons/bs';
 
 const AdminProximamente = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [proximamente, setProximamente] = useState([]);
+  const [upcomingReleases, setUpcomingReleases] = useState([]);
   const [userName, setUserName] = useState('Admin');
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     handleLogin();
     fetchProximamente();
+    fetchUpcomingReleases();
   }, []);
 
   const handleLogin = async () => {
@@ -33,12 +38,20 @@ const AdminProximamente = () => {
     }
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+    if (searchTerm.trim() === '') {
+      setIsSearching(false);
+      return;
+    }
     try {
       const response = await api.get('/movie/from-movie-api', {
         params: { name: searchTerm },
       });
       setSearchResults(response.data.data);
+      setIsSearching(true); // Indicar que se está realizando una búsqueda
     } catch (error) {
       console.error('Error searching movies:', error);
       toast.error('Error searching movies');
@@ -93,6 +106,29 @@ const AdminProximamente = () => {
     }
   };
 
+  const fetchUpcomingReleases = async () => {
+    try {
+      const response = await api.get('/movie/upcoming');
+      setUpcomingReleases(response.data.data);
+    } catch (error) {
+      console.error('Error fetching upcoming releases:', error);
+      toast.error('Error fetching upcoming releases');
+    }
+  };
+
+  const formatDuration = (minutes) => {
+    if (isNaN(minutes)) return 'N/A';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`;
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch(event);
+    }
+  };
+
   return (
     <div>
       <AdminHeader 
@@ -100,6 +136,7 @@ const AdminProximamente = () => {
         setSearchTerm={setSearchTerm} 
         handleSearch={handleSearch} 
         userName={userName} 
+        handleKeyPress={handleKeyPress} 
       />
       <Container className="mt-5">
         <ToastContainer />
@@ -109,35 +146,109 @@ const AdminProximamente = () => {
           </Col>
         </Row>
         <Row className="mt-4">
-          {searchResults.length > 0 && searchResults.map((movie) => (
-            <Col key={movie.id} md={4} className="mb-4">
-              <Card>
-                <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
-                <Card.Body>
-                  <Card.Title>{movie.title}</Card.Title>
-                  <Card.Text>{movie.overview}</Card.Text>
-                  <Button className="mt-2" onClick={() => handleAddMovieToDatabase(movie)}>
-                    Agregar a Base de Datos
-                  </Button>
-                  <Button className="mt-2" onClick={() => handleAddToProximamente(movie)}>
-                    Agregar a Próximamente
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+          {isSearching ? (
+            searchResults.length > 0 ? (
+              searchResults.map((movie) => (
+                <Col key={movie.id} md={6} className="mb-4">
+                  <Card className="movie-card">
+                    <Row noGutters>
+                      <Col md={5}>
+                        {movie.poster_path ? (
+                          <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
+                        ) : (
+                          <div className="d-flex align-items-center justify-content-center h-100">
+                            <BsFillCameraVideoFill size={96} />
+                          </div>
+                        )}
+                      </Col>
+                      <Col md={7}>
+                        <Card.Body>
+                          <Card.Title>{movie.title}</Card.Title>
+                          <Card.Text>
+                            Fecha de Estreno: {new Date(movie.release_date).toLocaleDateString()}<br />
+                            Duración: {formatDuration(movie.runtime)}<br />
+                            Género: {(movie.genres || []).map(genre => genre.name).join(', ')}
+                          </Card.Text>
+                          <div className="d-flex justify-content-between">
+                            <Button className="custom-button-add-to-db" onClick={() => handleAddMovieToDatabase(movie)}>Agregar a Base de Datos</Button>
+                            <Button className="custom-button-add-to-proximamente" onClick={() => handleAddToProximamente(movie)}>Agregar a Próximamente</Button>
+                          </div>
+                        </Card.Body>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              ))
+            ) : (
+              <p>No se encontraron resultados de búsqueda</p>
+            )
+          ) : (
+            upcomingReleases.map((movie) => (
+              <Col key={movie.id} md={6} className="mb-4">
+                <Card className="movie-card">
+                  <Row noGutters>
+                    <Col md={5}>
+                      {movie.poster_path ? (
+                        <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
+                      ) : (
+                        <div className="d-flex align-items-center justify-content-center h-100">
+                          <BsFillCameraVideoFill size={96} />
+                        </div>
+                      )}
+                    </Col>
+                    <Col md={7}>
+                      <Card.Body>
+                        <Card.Title>{movie.title}</Card.Title>
+                        <Card.Text>
+                          Fecha de Estreno: {new Date(movie.release_date).toLocaleDateString()}<br />
+                          Duración: {formatDuration(movie.runtime)}<br />
+                          Género: {(movie.genres || []).map(genre => genre.name).join(', ')}
+                        </Card.Text>
+                        <div className="d-flex justify-content-between">
+                          <Button className="custom-button-add-to-db" onClick={() => handleAddMovieToDatabase(movie)}>Agregar a Base de Datos</Button>
+                          <Button className="custom-button-add-to-proximamente" onClick={() => handleAddToProximamente(movie)}>Agregar a Próximamente</Button>
+                        </div>
+                      </Card.Body>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            ))
+          )}
         </Row>
         <Row className="mt-4">
           <Col>
             <h3>Próximamente</h3>
             {proximamente.length > 0 ? (
-              <ListGroup>
+              <Row>
                 {proximamente.map((movie) => (
-                  <ListGroup.Item key={movie.id}>
-                    {movie.name} - Fecha de Estreno: {new Date(movie.fecha_lanzamiento).toLocaleDateString()} - Duración: {movie.duration} min - Género: {movie.genero.join(', ')}
-                  </ListGroup.Item>
+                  <Col key={movie.id} md={6} className="mb-4">
+                    <Card className="movie-card">
+                      <Row noGutters>
+                        <Col md={5}>
+                          {movie.poster_path ? (
+                            <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
+                          ) : (
+                            <div className="d-flex align-items-center justify-content-center h-100">
+                              <BsFillCameraVideoFill size={96} />
+                            </div>
+                          )}
+                        </Col>
+                        <Col md={7}>
+                          <Card.Body>
+                            <Card.Title>{movie.name}</Card.Title>
+                            <Card.Text>
+                              Fecha de Estreno: {new Date(movie.fecha_lanzamiento).toLocaleDateString()}<br />
+                              Duración: {formatDuration(movie.duration)}<br />
+                              Género: {(movie.genero || []).join(', ')}
+                            </Card.Text>
+                          </Card.Body>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Col>
                 ))}
-              </ListGroup>
+              </Row>
             ) : (
               <p>No upcoming movies available</p>
             )}

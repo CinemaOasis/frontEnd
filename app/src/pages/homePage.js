@@ -98,8 +98,8 @@ const HomePage = () => {
               <Col key={group.movie.id + (group.funciones[0].isWeekend ? '-weekend' : '')} md={6} className="mb-4">
                 <Card className="movie-card">
                   <Row noGutters>
-                    <Col md={5}>
-                      <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${group.movie.poster_path}`} />
+                    <Col md={5} className="d-flex align-items-center justify-content-center">
+                      <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${group.movie.poster_path}`} className="movie-poster" />
                     </Col>
                     <Col md={7}>
                       <Card.Body>
@@ -109,10 +109,10 @@ const HomePage = () => {
                             <div key={index}>
                               Sala: {funcion.salaId} {funcion.isWeekend ? 'Sábados y Domingos' : 'Todos los días'}<br />
                               Horario: {formatTime(funcion.startTime)}<br />
-                              {funcion.isPremiere && <Badge bg="warning" text="dark">Estreno</Badge>}
-                              {funcion.isWeekend && <Badge bg="info" text="dark">Fin de Semana</Badge>}
                             </div>
                           ))}
+                          {group.funciones.some(funcion => funcion.isPremiere) && <Badge bg="warning" text="dark">Estreno</Badge>}
+                          {group.funciones.some(funcion => funcion.isWeekend) && <Badge bg="info" text="dark">Fin de Semana</Badge>}
                         </Card.Text>
                         <div className="d-flex justify-content-between">
                           <Button className="custom-button-view-more" onClick={() => handleViewMore(group.movie.id)}>Ver Más</Button>
