@@ -89,7 +89,7 @@ const HomePage = () => {
                       <Card.Body>
                         <Card.Title>{funcion.movie.name}</Card.Title>
                         <Card.Text>
-                          Sala: {funcion.salaId}<br />
+                          Sala: {funcion.salaId} - {funcion.isWeekend ? "Sábados y Domingos" : "Todos los días"}<br />
                           Horario: {formatTime(funcion.startTime)}<br />
                           {funcion.isPremiere && <Badge bg="warning" text="dark">Estreno</Badge>}
                         </Card.Text>
