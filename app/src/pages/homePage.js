@@ -1,13 +1,13 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../assets/homePageStyle.css';
 
 const HomePage = () => {
@@ -79,21 +79,27 @@ const HomePage = () => {
         <Row>
           {cartelera.length > 0 ? (
             cartelera.map((funcion) => (
-              <Col key={funcion.id} md={4} className="mb-4">
+              <Col key={funcion.id} md={6} className="mb-4">
                 <Card className="movie-card">
-                  <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${funcion.movie.poster_path}`} />
-                  <Card.Body>
-                    <Card.Title>{funcion.movie.name}</Card.Title>
-                    <Card.Text>
-                      Sala: {funcion.salaId}<br />
-                      Horario: {formatTime(funcion.startTime)}<br />
-                      {funcion.isPremiere && <span className="badge badge-warning">Estreno</span>}
-                    </Card.Text>
-                    <div className="d-flex justify-content-between">
-                      <Button variant="primary" onClick={() => handleViewMore(funcion.movie.id)}>Ver Más</Button>
-                      <Button variant="success" onClick={handleBuyTickets}>Comprar Boletos</Button>
-                    </div>
-                  </Card.Body>
+                  <Row noGutters>
+                    <Col md={5}>
+                      <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${funcion.movie.poster_path}`} />
+                    </Col>
+                    <Col md={7}>
+                      <Card.Body>
+                        <Card.Title>{funcion.movie.name}</Card.Title>
+                        <Card.Text>
+                          Sala: {funcion.salaId}<br />
+                          Horario: {formatTime(funcion.startTime)}<br />
+                          {funcion.isPremiere && <Badge bg="warning" text="dark">Estreno</Badge>}
+                        </Card.Text>
+                        <div className="d-flex justify-content-between">
+                          <Button className="custom-button-view-more" onClick={() => handleViewMore(funcion.movie.id)}>Ver Más</Button>
+                          <Button className="custom-button-buy-tickets" onClick={handleBuyTickets}>Comprar Boletos</Button>
+                        </div>
+                      </Card.Body>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
             ))
