@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import api from '../services/api';
 import '../assets/movieDetailsStyle.css'; // Asegúrate de que la ruta es correcta
 
-const MovieDetails = () => {
-  const { id } = useParams();
+const MovieDetails = ({ id }) => {
   const [movie, setMovie] = useState(null);
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const MovieDetails = () => {
   if (!movie) return <p>Cargando...</p>;
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-5 movie-details">
       <Row>
         <Col md={6}>
           <Card>
@@ -40,13 +38,28 @@ const MovieDetails = () => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <Card.Title>{movie.title}</Card.Title>
+              <Card.Title>{movie.name}</Card.Title>
               <Card.Text>
-                <strong>Descripción:</strong> {movie.overview}<br />
-                <strong>Género:</strong> {movie.genre}<br />
+                <strong>Descripción:</strong> {movie.description}<br />
+                <strong>Género:</strong> {movie.genero.join(', ')}<br />
                 <strong>Duración:</strong> {formatDuration(movie.duration)}<br />
-                <strong>Clasificación:</strong> {movie.rating}
+                <strong>Clasificación:</strong> {movie.rating}<br />
+                <strong>Fecha de Lanzamiento:</strong> {new Date(movie.fecha_lanzamiento).toLocaleDateString()}<br />
               </Card.Text>
+              {movie.trailer_key && (
+                <div className="trailer">
+                  <h5>Tráiler</h5>
+                  <iframe
+                    width="100%"
+                    height="315"
+                    src={`https://www.youtube.com/embed/${movie.trailer_key}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              )}
             </Card.Body>
           </Card>
         </Col>

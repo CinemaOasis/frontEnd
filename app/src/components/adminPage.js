@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card, ListGroup, Modal } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
@@ -14,6 +14,8 @@ const AdminPage = () => {
   const [cartelera, setCartelera] = useState([]);
   const [isPremiere, setIsPremiere] = useState(false); // Nueva opción para estreno
   const [isWeekend, setIsWeekend] = useState(false); // Nueva opción para fin de semana
+  const [editingFunction, setEditingFunction] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
   const movieDetailsRef = useRef(null);
   const [userName, setUserName] = useState('Admin');  // Asigna un nombre de usuario por defecto
 
@@ -128,6 +130,39 @@ const AdminPage = () => {
     }
   };
 
+  const handleEditFunction = (funcion) => {
+    setEditingFunction(funcion);
+    setSalaId(funcion.salaId);
+    setStartTime(funcion.startTime);
+    setIsPremiere(funcion.isPremiere);
+    setIsWeekend(funcion.isWeekend);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateFunction = async () => {
+    if (!editingFunction || !salaId || !startTime) {
+      toast.error('Por favor, completa todos los campos antes de actualizar la función');
+      return;
+    }
+
+    try {
+      const requestData = {
+        salaId: parseInt(salaId, 10),
+        startTime,
+        isPremiere,
+        isWeekend,
+      };
+      await api.put(`/funcion/${editingFunction.id}`, requestData);
+      toast.success('Función actualizada correctamente');
+      setShowEditModal(false);
+      setEditingFunction(null);
+      fetchCartelera(); // Fetch the updated cartelera
+    } catch (error) {
+      console.error('Error updating function:', error);
+      toast.error('Error actualizando la función');
+    }
+  };
+
   useEffect(() => {
     if (selectedMovie && movieDetailsRef.current) {
       movieDetailsRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -220,6 +255,9 @@ const AdminPage = () => {
                 {cartelera.map((funcion) => (
                   <ListGroup.Item key={funcion.id}>
                     {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''} {funcion.isWeekend ? '- Fin de Semana' : ''}
+                    <Button variant="warning" className="ml-3" onClick={() => handleEditFunction(funcion)}>
+                      Editar
+                    </Button>
                     <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
                       Eliminar
                     </Button>
@@ -232,6 +270,51 @@ const AdminPage = () => {
           </Col>
         </Row>
       </Container>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Función</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Sala ID</Form.Label>
+            <Form.Control
+              type="number"
+              value={salaId}
+              onChange={(e) => setSalaId(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group className="mt-2">
+            <Form.Label>Hora de Inicio</Form.Label>
+            <Form.Control
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group className="mt-2">
+            <Form.Check
+              type="checkbox"
+              label="Estreno"
+              checked={isPremiere}
+              onChange={(e) => setIsPremiere(e.target.checked)}
+            />
+            <Form.Check
+              type="checkbox"
+              label="Fin de Semana"
+              checked={isWeekend}
+              onChange={(e) => setIsWeekend(e.target.checked)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleUpdateFunction}>
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

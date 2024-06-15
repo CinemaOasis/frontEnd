@@ -1,19 +1,23 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Badge, Modal } from 'react-bootstrap';
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
 import { useNavigate } from 'react-router-dom';
+import MovieDetails from '../components/MovieDetails'; // Asegúrate de que la ruta es correcta
 import '../assets/homePageStyle.css';
 
 const HomePage = () => {
   const [cartelera, setCartelera] = useState([]);
+  const [groupedCartelera, setGroupedCartelera] = useState([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const { isAuthenticated, user } = useContext(AuthContext);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,10 +27,25 @@ const HomePage = () => {
   const fetchCartelera = async () => {
     try {
       const response = await api.get('/funcion');
-      setCartelera(response.data.data); // Ajusta según la estructura de tu respuesta
+      const funciones = response.data.data;
+      setCartelera(funciones);
+      groupCartelera(funciones);
     } catch (error) {
       console.error('Error fetching cartelera:', error);
     }
+  };
+
+  const groupCartelera = (funciones) => {
+    const grouped = funciones.reduce((acc, funcion) => {
+      const key = `${funcion.movie.id}-${funcion.isWeekend}`;
+      if (!acc[key]) {
+        acc[key] = { movie: funcion.movie, funciones: [] };
+      }
+      acc[key].funciones.push(funcion);
+      return acc;
+    }, {});
+
+    setGroupedCartelera(Object.values(grouped));
   };
 
   const handleContinue = () => {
@@ -34,11 +53,8 @@ const HomePage = () => {
   };
 
   const handleViewMore = (movieId) => {
-    if (isAuthenticated) {
-      navigate(`/movie/${movieId}`);
-    } else {
-      navigate('/loginForm');
-    }
+    setSelectedMovieId(movieId);
+    setShowModal(true);
   };
 
   const handleBuyTickets = () => {
@@ -77,24 +93,29 @@ const HomePage = () => {
       )}
       <Container className="mt-5">
         <Row>
-          {cartelera.length > 0 ? (
-            cartelera.map((funcion) => (
-              <Col key={funcion.id} md={6} className="mb-4">
+          {groupedCartelera.length > 0 ? (
+            groupedCartelera.map((group) => (
+              <Col key={group.movie.id + (group.funciones[0].isWeekend ? '-weekend' : '')} md={6} className="mb-4">
                 <Card className="movie-card">
                   <Row noGutters>
                     <Col md={5}>
-                      <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${funcion.movie.poster_path}`} />
+                      <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${group.movie.poster_path}`} />
                     </Col>
                     <Col md={7}>
                       <Card.Body>
-                        <Card.Title>{funcion.movie.name}</Card.Title>
+                        <Card.Title>{group.movie.name}</Card.Title>
                         <Card.Text>
-                          Sala: {funcion.salaId} - {funcion.isWeekend ? "Sábados y Domingos" : "Todos los días"}<br />
-                          Horario: {formatTime(funcion.startTime)}<br />
-                          {funcion.isPremiere && <Badge bg="warning" text="dark">Estreno</Badge>}
+                          {group.funciones.map((funcion, index) => (
+                            <div key={index}>
+                              Sala: {funcion.salaId} {funcion.isWeekend ? 'Sábados y Domingos' : 'Todos los días'}<br />
+                              Horario: {formatTime(funcion.startTime)}<br />
+                              {funcion.isPremiere && <Badge bg="warning" text="dark">Estreno</Badge>}
+                              {funcion.isWeekend && <Badge bg="info" text="dark">Fin de Semana</Badge>}
+                            </div>
+                          ))}
                         </Card.Text>
                         <div className="d-flex justify-content-between">
-                          <Button className="custom-button-view-more" onClick={() => handleViewMore(funcion.movie.id)}>Ver Más</Button>
+                          <Button className="custom-button-view-more" onClick={() => handleViewMore(group.movie.id)}>Ver Más</Button>
                           <Button className="custom-button-buy-tickets" onClick={handleBuyTickets}>Comprar Boletos</Button>
                         </div>
                       </Card.Body>
@@ -108,6 +129,15 @@ const HomePage = () => {
           )}
         </Row>
       </Container>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Detalles de la Película</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedMovieId && <MovieDetails id={selectedMovieId} />}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

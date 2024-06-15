@@ -8,6 +8,7 @@ import ConfirmEmail from './components/confirmEmail';
 import AdminProximamente from './components/adminProximamente';
 import AdminEstrenos from './components/adminEstrenos';
 import MovieDetails from './components/MovieDetails';
+import Estrenos from './pages/Estrenos'; // Importa el nuevo componente
 import { AuthProvider, AuthContext } from './services/authEmail';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -41,6 +42,7 @@ function Main() {
       <Route path='/adminProximamente' element={<AdminProximamente />} />
       <Route path='/confirm' element={<ConfirmEmail />} />
       <Route path='/movie/:id' element={<MovieDetails />} />
+      <Route path='/estrenos' element={<Estrenos />} /> {/* Añade la nueva ruta */}
     </Routes>
   );
 }
