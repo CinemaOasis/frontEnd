@@ -1,50 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import api from '../services/api'; // Import your axios instance
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../services/authEmail';
+import api from '../services/api';
 
 const ConfirmEmail = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [message, setMessage] = useState('');
+  const location = useLocation();
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
-    const confirmEmail = async () => {
-      const params = new URLSearchParams(location.search);
-      const token = params.get('tk');
+    const params = new URLSearchParams(location.search);
+    const success = params.get('success');
+    const email = params.get('email');
+    const name = params.get('name');
 
-      if (!token) {
-        setMessage('No token provided.');
-        return;
-      }
-
-      try {
-        const response = await api.get(`/emailauth/confirm?tk=${token}`);
-        if (response.status === 200) {
-          setMessage('Email confirmed successfully.');
-          // Optionally, you can log the user in automatically
-          const loginResponse = await api.post('/login', {
-            email: response.data.email,
-            token,
-          });
-          if (loginResponse.status === 200) {
-            navigate('/adminPage'); // Redirect to dashboard or any other page
-          }
-        } else {
-          setMessage('Failed to confirm email. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error confirming email:', error);
-        setMessage('Failed to confirm email. Please try again.');
-      }
-    };
-
-    confirmEmail();
-  }, [location, navigate]);
+    if (success === 'true') {
+      const userData = { email, name, token: params.get('token') };
+      login(userData);
+      navigate('/', { replace: true });
+    } else if (success === 'false') {
+      // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje en la UI.
+      console.error('Error confirming email');
+    }
+  }, [location, login, navigate]);
 
   return (
     <div>
-      <h1>Confirm Email</h1>
-      <p>{message}</p>
+      <p>Procesando confirmación de email...</p>
     </div>
   );
 };

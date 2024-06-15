@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import api from './api';
 
 export const AuthContext = createContext();
 
@@ -8,9 +9,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    if (storedUser && token) {
       setIsAuthenticated(true);
       setUser(storedUser);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
   }, []);
 
@@ -18,6 +21,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(true);
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', userData.token);
+    api.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
   };
 
   const logout = () => {
@@ -25,6 +30,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
   };
 
   return (
