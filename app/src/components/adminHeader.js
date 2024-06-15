@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,25 @@ const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
     const { logout } = useContext(AuthContext);
+
+    useEffect(() => {
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.style.display = 'block';
+            } else {
+                scrollToTopBtn.style.display = 'none';
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleScrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const handleLogout = () => {
         logout(); // Llama a la función de logout del contexto de autenticación
@@ -89,6 +108,7 @@ const AdminHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
                 <Link to="/adminEstrenos">Estrenos</Link>
                 <Link to="/adminProximamente">Próximamente</Link>
             </nav>
+            <button id="scrollToTopBtn" onClick={handleScrollToTop}>↑</button>
         </header>
     );
 }

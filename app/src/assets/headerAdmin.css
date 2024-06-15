@@ -5,12 +5,14 @@ header {
     padding: 40px;
     max-width: 100%;
     height: auto;
+    background-color: white;
 }
 
 .headerTop {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    align-items: center;
 }
 
 .logo {
@@ -35,13 +37,14 @@ header {
     background: #85AA30;
     border-radius: 0px 10px 10px 0px;
     border: 1px #85AA30 solid;
-    height: 52px;
+    height: 48px;
     width: 60px;
     vertical-align: middle;
     border: none;
     position: absolute;
     right: -4em;
 }
+
 .barraBuscar {
     display: inline-block;
     vertical-align: middle;
@@ -113,4 +116,71 @@ header {
     color: #EE2835;
     font-size: 25px;
     font-weight: bold;
+}
+
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    width: 50px;
+    height: 50px;
+    background-color: #85AA30;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #76a021;
+}
+
+@media (max-width: 768px) {
+    .headerTop {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo {
+        width: 300px;
+        height: auto;
+        align-self: flex-start;
+    }
+
+    .barraBuscar {
+        width: 100%;
+        margin: 10px 0;
+        align-self: center;
+    }
+
+    .barraBuscar input {
+        width: calc(100% - 50px);
+        margin-top: 10px;
+    }
+
+    .barraBuscar button {
+        right: 0;
+        margin-top: 10px;
+    }
+
+    .profileMenu {
+        align-self: flex-end;
+        margin-top: -150px;
+    }
+
+    .headerNav {
+        margin-top: 130px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .headerNav a {
+        margin-top: 10px;
+    }
 }

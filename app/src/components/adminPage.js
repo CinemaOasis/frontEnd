@@ -12,6 +12,7 @@ const AdminPage = () => {
   const [salaId, setSalaId] = useState('');
   const [startTime, setStartTime] = useState('');
   const [cartelera, setCartelera] = useState([]);
+  const [carteleraWeekend, setCarteleraWeekend] = useState([]);
   const [isPremiere, setIsPremiere] = useState(false); // Nueva opción para estreno
   const movieDetailsRef = useRef(null);
   const [userName, setUserName] = useState('Admin');  // Asigna un nombre de usuario por defecto
@@ -19,6 +20,7 @@ const AdminPage = () => {
   useEffect(() => {
     handleLogin();
     fetchCartelera();
+    fetchCarteleraWeekend();
   }, []);
 
   const handleLogin = async () => {
@@ -71,7 +73,7 @@ const AdminPage = () => {
     }
   };
 
-  const handleAddToCartelera = async () => {
+  const handleAddToCartelera = async (weekend = false) => {
     if (!selectedMovie || !selectedMovie.dbId || !salaId || !startTime) {
       toast.error('Por favor, completa todos los campos antes de agregar la función a la cartelera');
       return;
@@ -84,10 +86,14 @@ const AdminPage = () => {
         startTime,
         status: 'Programada',
         isPremiere,  // Nueva opción para estreno
+        weekend, // Nuevo campo para indicar si es una función de fin de semana
       };
       await api.post('/funcion', requestData);
       toast.success('Función agregada a la cartelera correctamente');
       fetchCartelera(); // Fetch the updated cartelera
+      if (weekend) {
+        fetchCarteleraWeekend(); // Fetch the updated weekend cartelera if applicable
+      }
     } catch (error) {
       console.error('Error adding function:', error);
       if (error.response && error.response.status === 400) {
@@ -103,6 +109,7 @@ const AdminPage = () => {
       await api.delete(`/funcion/${funcionId}`);
       toast.success('Función eliminada correctamente');
       fetchCartelera(); // Fetch the updated cartelera
+      fetchCarteleraWeekend(); // Fetch the updated weekend cartelera
     } catch (error) {
       console.error('Error deleting function:', error);
       toast.error('Error eliminando la función');
@@ -111,11 +118,21 @@ const AdminPage = () => {
 
   const fetchCartelera = async () => {
     try {
-      const response = await api.get('/funcion');
+      const response = await api.get('/funcion', { params: { weekend: false } });
       setCartelera(response.data.data);
     } catch (error) {
       console.error('Error fetching cartelera:', error);
       toast.error('Error fetching cartelera');
+    }
+  };
+
+  const fetchCarteleraWeekend = async () => {
+    try {
+      const response = await api.get('/funcion', { params: { weekend: true } });
+      setCarteleraWeekend(response.data.data);
+    } catch (error) {
+      console.error('Error fetching weekend cartelera:', error);
+      toast.error('Error fetching weekend cartelera');
     }
   };
 
@@ -148,11 +165,9 @@ const AdminPage = () => {
         handleSearch={handleSearch} 
         userName={userName} 
       />
-      <Container className="mt-5">
+      <Container className="mt-5 pt-5"> {/* Ajusta para la barra de navegación fija */}
         <ToastContainer />
         <Row>
-        </Row>
-        <Row className="mt-4">
           {searchResults.length > 0 && searchResults.map((movie) => (
             <Col key={movie.id} md={4} className="mb-4">
               <Card onClick={() => handleMovieSelect(movie)}>
@@ -198,8 +213,11 @@ const AdminPage = () => {
                       onChange={(e) => setIsPremiere(e.target.checked)} 
                     />
                   </Form.Group>
-                  <Button className="mt-2" onClick={handleAddToCartelera}>
+                  <Button className="mt-2" onClick={() => handleAddToCartelera(false)}>
                     Crear Cartelera
+                  </Button>
+                  <Button className="mt-2" onClick={() => handleAddToCartelera(true)}>
+                    Crear Cartelera Fin de Semana
                   </Button>
                 </Card.Body>
               </Card>
@@ -208,10 +226,29 @@ const AdminPage = () => {
         )}
         <Row className="mt-4">
           <Col>
-            <h3>Cartelera</h3>
+            <h3>Cartelera Semanal</h3>
             {cartelera.length > 0 ? (
               <ListGroup>
                 {cartelera.map((funcion) => (
+                  <ListGroup.Item key={funcion.id}>
+                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''}
+                    <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
+                      Eliminar
+                    </Button>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            ) : (
+              <p>No hay funciones disponibles</p>
+            )}
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <Col>
+            <h3>Cartelera Fin de Semana</h3>
+            {carteleraWeekend.length > 0 ? (
+              <ListGroup>
+                {carteleraWeekend.map((funcion) => (
                   <ListGroup.Item key={funcion.id}>
                     {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''}
                     <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
