@@ -1,3 +1,5 @@
+// components/AdminProximamente.js
+
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
@@ -116,17 +118,26 @@ const AdminProximamente = () => {
     }
   };
 
-  const formatDuration = (minutes) => {
-    if (isNaN(minutes)) return 'N/A';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`;
+  const handleDeleteFromProximamente = async (movieId) => {
+    try {
+      await api.put(`/movie/${movieId}/proximamente`, { proximamente: false });
+      toast.success('Película eliminada de "Próximamente" correctamente');
+      fetchProximamente();
+    } catch (error) {
+      console.error('Error deleting movie from proximamente:', error);
+      toast.error('Error eliminando la película de "Próximamente"');
+    }
   };
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSearch(event);
     }
+  };
+
+  const formatGenres = (genres) => {
+    if (!genres || !Array.isArray(genres)) return 'N/A';
+    return genres.map(genre => genre.name).join(', ');
   };
 
   return (
@@ -151,7 +162,7 @@ const AdminProximamente = () => {
               searchResults.map((movie) => (
                 <Col key={movie.id} md={6} className="mb-4">
                   <Card className="movie-card">
-                    <Row noGutters>
+                    <Row nogutters="true">
                       <Col md={5}>
                         {movie.poster_path ? (
                           <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
@@ -166,8 +177,7 @@ const AdminProximamente = () => {
                           <Card.Title>{movie.title}</Card.Title>
                           <Card.Text>
                             Fecha de Estreno: {new Date(movie.release_date).toLocaleDateString()}<br />
-                            Duración: {formatDuration(movie.runtime)}<br />
-                            Género: {(movie.genres || []).map(genre => genre.name).join(', ')}
+                            Género: {formatGenres(movie.genres)}
                           </Card.Text>
                           <div className="d-flex justify-content-between">
                             <Button className="custom-button-add-to-db" onClick={() => handleAddMovieToDatabase(movie)}>Agregar a Base de Datos</Button>
@@ -186,7 +196,7 @@ const AdminProximamente = () => {
             upcomingReleases.map((movie) => (
               <Col key={movie.id} md={6} className="mb-4">
                 <Card className="movie-card">
-                  <Row noGutters>
+                  <Row nogutters="true">
                     <Col md={5}>
                       {movie.poster_path ? (
                         <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
@@ -201,8 +211,7 @@ const AdminProximamente = () => {
                         <Card.Title>{movie.title}</Card.Title>
                         <Card.Text>
                           Fecha de Estreno: {new Date(movie.release_date).toLocaleDateString()}<br />
-                          Duración: {formatDuration(movie.runtime)}<br />
-                          Género: {(movie.genres || []).map(genre => genre.name).join(', ')}
+                          Género: {formatGenres(movie.genres)}
                         </Card.Text>
                         <div className="d-flex justify-content-between">
                           <Button className="custom-button-add-to-db" onClick={() => handleAddMovieToDatabase(movie)}>Agregar a Base de Datos</Button>
@@ -224,7 +233,7 @@ const AdminProximamente = () => {
                 {proximamente.map((movie) => (
                   <Col key={movie.id} md={6} className="mb-4">
                     <Card className="movie-card">
-                      <Row noGutters>
+                      <Row nogutters="true">
                         <Col md={5}>
                           {movie.poster_path ? (
                             <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
@@ -239,9 +248,13 @@ const AdminProximamente = () => {
                             <Card.Title>{movie.name}</Card.Title>
                             <Card.Text>
                               Fecha de Estreno: {new Date(movie.fecha_lanzamiento).toLocaleDateString()}<br />
-                              Duración: {formatDuration(movie.duration)}<br />
                               Género: {(movie.genero || []).join(', ')}
                             </Card.Text>
+                            <div className="d-flex justify-content-between">
+                              <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromProximamente(movie.id)}>
+                                Eliminar
+                              </Button>
+                            </div>
                           </Card.Body>
                         </Col>
                       </Row>
@@ -250,7 +263,7 @@ const AdminProximamente = () => {
                 ))}
               </Row>
             ) : (
-              <p>No upcoming movies available</p>
+              <p>No hay películas en "Próximamente"</p>
             )}
           </Col>
         </Row>
