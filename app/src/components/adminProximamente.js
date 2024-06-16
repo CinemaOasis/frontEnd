@@ -1,7 +1,5 @@
-// components/AdminProximamente.js
-
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, ListGroup, Modal, Card } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
@@ -16,6 +14,9 @@ const AdminProximamente = () => {
   const [upcomingReleases, setUpcomingReleases] = useState([]);
   const [userName, setUserName] = useState('Admin');
   const [isSearching, setIsSearching] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [customReleaseDate, setCustomReleaseDate] = useState('');
 
   useEffect(() => {
     handleLogin();
@@ -129,6 +130,31 @@ const AdminProximamente = () => {
     }
   };
 
+  const handleEditMovie = (movie) => {
+    setSelectedMovie(movie);
+    setCustomReleaseDate(movie.fecha_lanzamiento);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateMovie = async () => {
+    if (!selectedMovie || !customReleaseDate) {
+      toast.error('Por favor, completa todos los campos antes de actualizar la película');
+      return;
+    }
+
+    try {
+      await api.put(`/movie/${selectedMovie.id}/proximamente`, {
+        fecha_lanzamiento: customReleaseDate,
+      });
+      toast.success('Película actualizada correctamente');
+      setShowEditModal(false);
+      fetchProximamente();
+    } catch (error) {
+      console.error('Error updating movie:', error);
+      toast.error('Error actualizando la película');
+    }
+  };
+
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSearch(event);
@@ -229,45 +255,46 @@ const AdminProximamente = () => {
           <Col>
             <h3>Próximamente</h3>
             {proximamente.length > 0 ? (
-              <Row>
+              <ListGroup>
                 {proximamente.map((movie) => (
-                  <Col key={movie.id} md={6} className="mb-4">
-                    <Card className="movie-card">
-                      <Row nogutters="true">
-                        <Col md={5}>
-                          {movie.poster_path ? (
-                            <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} className="movie-poster" />
-                          ) : (
-                            <div className="d-flex align-items-center justify-content-center h-100">
-                              <BsFillCameraVideoFill size={96} />
-                            </div>
-                          )}
-                        </Col>
-                        <Col md={7}>
-                          <Card.Body>
-                            <Card.Title>{movie.name}</Card.Title>
-                            <Card.Text>
-                              Fecha de Estreno: {new Date(movie.fecha_lanzamiento).toLocaleDateString()}<br />
-                              Género: {(movie.genero || []).join(', ')}
-                            </Card.Text>
-                            <div className="d-flex justify-content-between">
-                              <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromProximamente(movie.id)}>
-                                Eliminar
-                              </Button>
-                            </div>
-                          </Card.Body>
-                        </Col>
-                      </Row>
-                    </Card>
-                  </Col>
+                  <ListGroup.Item key={movie.id}>
+                    {movie.name} - Fecha de Estreno: {new Date(movie.fecha_lanzamiento).toLocaleDateString()} - Género: {(movie.genero || []).join(', ')}
+                    
+                    <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromProximamente(movie.id)}>
+                      Eliminar
+                    </Button>
+                  </ListGroup.Item>
                 ))}
-              </Row>
+              </ListGroup>
             ) : (
               <p>No hay películas en "Próximamente"</p>
             )}
           </Col>
         </Row>
       </Container>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedMovie ? 'Editar Fecha de Estreno' : 'Agregar Fecha de Estreno'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Fecha de Estreno</Form.Label>
+            <Form.Control
+              type="date"
+              value={customReleaseDate}
+              onChange={(e) => setCustomReleaseDate(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={selectedMovie ? handleUpdateMovie : handleAddToProximamente}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

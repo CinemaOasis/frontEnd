@@ -33,13 +33,13 @@ const Header = () => {
             </div>
 
             <nav className="headerNav">
-                <Link to="/">Inicio</Link>
-                <Link to="/">Estrenos</Link>
-                <Link to="/">Próximamente</Link>
-                <Link to="/">Contacto</Link>
+                <Link to="/homePage">Inicio</Link>
+                <Link to="/Cartelera">Cartelera</Link>
+                <Link to="/Estrenos">Estrenos</Link>
+                <Link to="/Proximamente">Próximamente</Link>
             </nav>
         </header>
     );
-}
+} 
 
 export default Header;
