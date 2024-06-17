@@ -5,6 +5,8 @@ import { Container, Row, Col, Card, Button, Badge, Modal } from 'react-bootstrap
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
+import Footer from "../components/Footer";
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
 import { useNavigate } from 'react-router-dom';
@@ -138,6 +140,8 @@ const Estrenos = () => {
           {selectedMovieId && <MovieDetails id={selectedMovieId} />}
         </Modal.Body>
       </Modal>
+      <ScrollToTopButton />
+      <Footer />
     </div>
   );
 };

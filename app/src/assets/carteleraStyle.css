@@ -1,0 +1,66 @@
+.movie-card {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    background-color: #fff; /* Asegura que el fondo de la tarjeta sea blanco */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra ligera */
+    border-radius: 8px; /* Bordes redondeados */
+  }
+  
+  .movie-card img {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 8px; /* Bordes redondeados */
+    border-bottom-left-radius: 8px; /* Bordes redondeados */
+  }
+  
+  .movie-card .card-body {
+    text-align: left;
+    padding: 20px; /* Asegura un espacio adecuado alrededor del contenido */
+  }
+  
+  .movie-card .card-title {
+    font-size: 1.8em; /* Aumenta el tamaño de la fuente del título */
+    margin-bottom: 10px;
+  }
+  
+  .movie-card .card-text {
+    font-size: 1.5em; /* Aumenta el tamaño de la fuente del texto */
+    color: black;
+  }
+  
+  .movie-card .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .movie-card .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+    font-size: 1em; /* Aumenta el tamaño de la fuente de la etiqueta */
+  }
+  
+  .custom-button-view-more {
+    background-color: #76a021;
+    color: white;
+    border: none;
+    font-size: 1.2em;
+    padding: 10px 20px; /* Ajusta el tamaño del botón */
+  }
+  
+  .custom-button-view-more:hover {
+    background-color: #65971a; /* Un tono más oscuro para el hover */
+  }
+  
+  .custom-button-buy-tickets {
+    background-color: #EE2835;
+    color: white;
+    border: none;
+    font-size: 1.2em;
+    padding: 10px 20px; /* Ajusta el tamaño del botón */
+  }
+  
+  .custom-button-buy-tickets:hover {
+    background-color: #d61f2b; /* Un tono más oscuro para el hover */
+  }
+  

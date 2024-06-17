@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import HomePage from './pages/homePage';
+import Inicio from './pages/Inicio';
+import Cartelera from './pages/Cartelera';
 import LoginForm from '../src/components/loginForm';
 import RegisterForm from '../src/components/registroForm';
 import AdminPage from './components/adminPage';
@@ -35,7 +36,8 @@ function Main() {
 
   return (
     <Routes>
-      <Route path='/' element={<HomePage />} />
+      <Route path='/' element={<Inicio />} />
+      <Route path='/Cartelera' element={<Cartelera />} />
       <Route path='/loginForm' element={<LoginForm />} />
       <Route path='/registroForm' element={<RegisterForm />} />
       <Route path='/adminPage' element={<AdminPage />} />

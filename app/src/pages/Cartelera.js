@@ -5,13 +5,15 @@ import { Container, Row, Col, Card, Button, Badge, Modal } from 'react-bootstrap
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
+import Footer from "../components/Footer";
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
 import { useNavigate } from 'react-router-dom';
 import MovieDetails from '../components/MovieDetails'; // Asegúrate de que la ruta es correcta
-import '../assets/homePageStyle.css';
+import '../assets/carteleraStyle.css';
 
-const HomePage = () => {
+const Cartelera = () => {
   const [cartelera, setCartelera] = useState([]);
   const [groupedCartelera, setGroupedCartelera] = useState([]);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -79,7 +81,7 @@ const HomePage = () => {
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`;
   };
 
-  // Evitamos renderizar la HomePage mientras se muestra la pantalla de bienvenida
+  // Evitamos renderizar la cartelera mientras se muestra la pantalla de bienvenida
   if (showWelcome && isAuthenticated && user) {
     return <WelcomeScreen name={user.name || (user.email && user.email.split('@')[0])} onContinue={handleContinue} />;
   }
@@ -138,8 +140,10 @@ const HomePage = () => {
           {selectedMovieId && <MovieDetails id={selectedMovieId} />}
         </Modal.Body>
       </Modal>
+      <ScrollToTopButton />
+      <Footer />
     </div>
   );
 };
 
-export default HomePage;
+export default Cartelera;

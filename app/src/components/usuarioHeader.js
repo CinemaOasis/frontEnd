@@ -87,7 +87,7 @@ const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
 
             <nav className="headerNav">
                 <Link to="/">Inicio</Link>
-                <Link to="/Cartelera">Cartelera</Link>
+                <Link to="/cartelera">Cartelera</Link>
                 <Link to="/estrenos">Estrenos</Link>
                 <Link to="/proximamente">Próximamente</Link>
             </nav>

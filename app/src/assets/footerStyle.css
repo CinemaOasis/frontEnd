@@ -1,0 +1,34 @@
+/* assets/footerStyle.css */
+
+.footer {
+    background-color: #85AA30;
+    color: #ffffff;
+    padding: 40px 0;
+  }
+  
+  .footer-logo {
+    width: 300px; /* Aumentar el tamaño del logo */
+  }
+  
+  .footer-info p {
+    margin: 0;
+    font-size: 18px; /* Aumentar el tamaño del texto */
+  }
+  
+  .footer-info a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  
+  .footer-info a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-icon {
+    color: #EE2835;
+    margin-right: 10px;
+    font-size: 50px; /* Aumentar el tamaño de los iconos */
+  }
+  

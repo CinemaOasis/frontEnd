@@ -1,10 +1,13 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
+import Footer from "../components/Footer";
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
 import { useNavigate } from 'react-router-dom';
@@ -120,6 +123,8 @@ const Proximamente = () => {
           {selectedMovieId && <MovieDetails id={selectedMovieId} />}
         </Modal.Body>
       </Modal>
+      <ScrollToTopButton />
+      <Footer />
     </div>
   );
 };

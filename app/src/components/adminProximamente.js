@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 import AdminHeader from '../components/adminHeader';
-import '../assets/homePageStyle.css';
+import '../assets/carteleraStyle.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 
 const AdminProximamente = () => {
