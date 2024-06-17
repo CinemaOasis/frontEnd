@@ -2,20 +2,22 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { Modal, Button } from 'react-bootstrap';
 import logo from '../assets/Cinema (500 x 200 px).png';
 import '../assets/headerUser.css';
 import lupaBuscar from '../assets/lupaBuscar (2).png';
-import { AuthContext } from '../services/authEmail'; // Asegúrate de que la ruta sea correcta
+import { AuthContext } from '../services/authEmail';
 
 const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
     let navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
     const { logout } = useContext(AuthContext);
+    const [showModal, setShowModal] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        logout(); // Llama a la función de logout del contexto de autenticación
+        logout();
         navigate('/');
     };
 
@@ -30,7 +32,7 @@ const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
     };
 
     const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
+        setShowModal(!showModal);
     };
 
     const handleProfileImageChange = (e) => {
@@ -67,21 +69,6 @@ const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
                             <FontAwesomeIcon icon={faUserCircle} size="2x" />
                         )}
                     </div>
-                    {menuOpen && (
-                        <div className='menu'>
-                            <p>{userName}</p>
-                            <label htmlFor="profileImageInput" className="profileImageLabel">
-                                Cambiar foto de perfil
-                            </label>
-                            <input 
-                                id="profileImageInput" 
-                                type="file" 
-                                accept="image/*" 
-                                onChange={handleProfileImageChange} 
-                            />
-                            <button onClick={handleLogout}>Cerrar sesión</button>
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -91,6 +78,39 @@ const UserHeader = ({ searchTerm, setSearchTerm, handleSearch, userName }) => {
                 <Link to="/estrenos">Estrenos</Link>
                 <Link to="/proximamente">Próximamente</Link>
             </nav>
+
+            <Modal show={showModal} onHide={toggleMenu}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Perfil de Usuario</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="text-center">
+                        {profileImage ? (
+                            <img src={profileImage} alt="Perfil" className="profileImageModal"/>
+                        ) : (
+                            <FontAwesomeIcon icon={faUserCircle} size="4x" />
+                        )}
+                        <h4>{userName}</h4>
+                        <label htmlFor="profileImageInput" className="profileImageLabel">
+                            Cambiar foto de perfil
+                        </label>
+                        <input 
+                            id="profileImageInput" 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleProfileImageChange} 
+                        />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={toggleMenu}>
+                        Cerrar
+                    </Button>
+                    <Button variant="danger" onClick={handleLogout}>
+                        Cerrar sesión
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </header>
     );
 }
