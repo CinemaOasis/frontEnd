@@ -1,4 +1,3 @@
-// services/api.js
 import axios from 'axios';
 
 // Base URL del backend
@@ -17,7 +16,9 @@ api.interceptors.request.use(
     (config) => {
         // Obtiene el token del almacenamiento local
         const authToken = localStorage.getItem('token');
-        if (authToken) {
+        console.log('Token en el interceptor:', authToken); // Verificar token en el interceptor
+        // Excluye la autenticación para la solicitud de detalles de películas
+        if (authToken && !config.url.includes('/movie/')) {
             config.headers.Authorization = `Bearer ${authToken}`;
         }
         return config;

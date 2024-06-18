@@ -20,16 +20,20 @@ const LoginForm = () => {
     }
     try {
       const response = await api.post('http://localhost:8888/api/v1/emailauth/login', { email, password });
-      localStorage.setItem('token', response.data.token);
+      const userData = response.data.data; // Accede al objeto data dentro de la respuesta
+      const token = userData.token;
+      console.log('Token:', token); // Log para verificar el token
+      console.log('User Data:', userData); // Verificar el objeto completo
 
-      const userData = {
-        email: response.data.email,
-        name: response.data.name,
-        role: response.data.email === 'wanderdj77@gmail.com' ? 'admin' : 'user'
-      };
+      // Guardar el token en el almacenamiento local
+      localStorage.setItem('token', token);
+
+      // Llamar a la función login del contexto de autenticación
       login(userData);
 
-      if (userData.role === 'admin') {
+      // Verificar el rol del usuario
+      const roles = userData.roles.map(role => role.name);
+      if (roles.includes('Admin')) {
         navigate('/adminPage');
       } else {
         navigate('/');
