@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Container, Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
 import Footer from '../components/Footer';
 import { AuthContext } from '../services/authEmail';
 import api from '../services/api';
+import '../assets/paymentPageStyle.css'; // Asegúrate de incluir los estilos CSS personalizados
 
 const SelectFuncion = () => {
   const { movieId } = useParams();
@@ -37,10 +38,13 @@ const SelectFuncion = () => {
       return;
     }
 
-    const cardElement = elements.getElement(CardElement);
+    const cardNumberElement = elements.getElement(CardNumberElement);
+    const cardExpiryElement = elements.getElement(CardExpiryElement);
+    const cardCvcElement = elements.getElement(CardCvcElement);
+
     const { paymentMethod, error } = await stripe.createPaymentMethod({
       type: 'card',
-      card: cardElement,
+      card: cardNumberElement,
       billing_details: {
         name: name,
         email: email,
@@ -90,12 +94,15 @@ const SelectFuncion = () => {
               funciones.map((funcion) => (
                 <Col key={funcion.id} md={6} className="mb-4">
                   <Card onClick={() => handleSelectFuncion(funcion)}>
-                    <Card.Body>
-                      <Card.Title>{funcion.movie.name}</Card.Title>
-                      <Card.Text>
-                        Sala: {funcion.salaId}<br />
-                        Horario: {formatTime(funcion.startTime)}<br />
-                      </Card.Text>
+                    <Card.Body className="d-flex">
+                      <Image src={`https://image.tmdb.org/t/p/w500${funcion.movie.poster_path}`} thumbnail style={{ width: '100px', height: '150px' }} />
+                      <div className="ml-3">
+                        <Card.Title>{funcion.movie.name}</Card.Title>
+                        <Card.Text>
+                          Sala: {funcion.salaId}<br />
+                          Horario: {formatTime(funcion.startTime)}<br />
+                        </Card.Text>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -108,7 +115,30 @@ const SelectFuncion = () => {
         {selectedFuncion && (
           <Row className="mt-4">
             <Col>
-              <Form onSubmit={handleSubmit}>
+              <Card className="mb-4">
+                <Card.Body className="d-flex">
+                  <Image src={`https://image.tmdb.org/t/p/w500${selectedFuncion.movie.poster_path}`} thumbnail style={{ width: '100px', height: '150px' }} />
+                  <div className="ml-3">
+                    <Card.Title>{selectedFuncion.movie.name}</Card.Title>
+                    <Card.Text>
+                      Sala: {selectedFuncion.salaId}<br />
+                      Horario: {formatTime(selectedFuncion.startTime)}<br />
+                    </Card.Text>
+                  </div>
+                </Card.Body>
+              </Card>
+              <Form.Group controlId="cantidad">
+                  <Form.Label>Cantidad de Taquillas</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={cantidadTaquillas}
+                    onChange={(e) => setCantidadTaquillas(e.target.value)}
+                    min="1"
+                    max="5"
+                    required
+                  />
+                </Form.Group>
+              <Form onSubmit={handleSubmit} className="payment-form">
                 <Form.Group controlId="email">
                   <Form.Label>Correo Electrónico</Form.Label>
                   <Form.Control
@@ -127,23 +157,32 @@ const SelectFuncion = () => {
                     required
                   />
                 </Form.Group>
-                <Form.Group controlId="cantidad">
-                  <Form.Label>Cantidad de Taquillas</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={cantidadTaquillas}
-                    onChange={(e) => setCantidadTaquillas(e.target.value)}
-                    min="1"
-                    max="5"
-                    required
-                  />
+                <Form.Group controlId="cardNumber">
+                  <Form.Label>Número de Tarjeta</Form.Label>
+                  <div className="card-element-wrapper">
+                    <CardNumberElement className="card-element" />
+                  </div>
                 </Form.Group>
-                <Form.Group controlId="card">
-                  <Form.Label>Información de la Tarjeta</Form.Label>
-                  <CardElement />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                  Comprar
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="cardExpiry">
+                      <Form.Label>Fecha de Expiración</Form.Label>
+                      <div className="card-element-wrapper">
+                        <CardExpiryElement className="card-element" />
+                      </div>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="cardCvc">
+                      <Form.Label>CVC</Form.Label>
+                      <div className="card-element-wrapper">
+                        <CardCvcElement className="card-element" />
+                      </div>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Button variant="primary" type="submit" className="payment-button">
+                  Pagar
                 </Button>
               </Form>
             </Col>
