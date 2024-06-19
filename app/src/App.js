@@ -2,8 +2,8 @@ import React, { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Inicio from './pages/Inicio';
 import Cartelera from './pages/Cartelera';
-import LoginForm from '../src/components/loginForm';
-import RegisterForm from '../src/components/registroForm';
+import LoginForm from './components/loginForm';
+import RegisterForm from './components/registroForm';
 import AdminPage from './components/adminPage';
 import ConfirmEmail from './components/confirmEmail';
 import { Elements } from '@stripe/react-stripe-js';
@@ -14,6 +14,7 @@ import MovieDetails from './components/MovieDetails';
 import Estrenos from './pages/Estrenos';
 import PaymentPage from './components/PaymentPage';
 import Proximamente from './pages/Proximamente';
+import SelectFuncion from './components/SelectFuncion'; // Nuevo componente
 import api from './services/api';
 import { AuthProvider, AuthContext } from './services/authEmail';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -106,6 +107,7 @@ function Main() {
       <Route path='/movie/:id' element={<MovieDetails />} />
       <Route path='/estrenos' element={<Estrenos />} />
       <Route path='/proximamente' element={<Proximamente />} />
+      <Route path='/select-funcion/:movieId' element={<SelectFuncion />} /> {/* Nueva ruta */}
       <Route path='/payment/:funcionId' element={<PaymentPage />} />
     </Routes>
   );

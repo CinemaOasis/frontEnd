@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
@@ -11,24 +11,21 @@ import '../assets/paymentPageStyle.css';
 
 const PaymentPage = () => {
   const { funcionId } = useParams();
+  const location = useLocation();
   const stripe = useStripe();
   const elements = useElements();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [funcion, setFuncion] = useState(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [selectedSala, setSelectedSala] = useState('');
-  const [selectedHorario, setSelectedHorario] = useState('');
-  const [cantidadTaquillas, setCantidadTaquillas] = useState(1);
+  const [cantidadTaquillas, setCantidadTaquillas] = useState(location.state ? location.state.cantidadTaquillas : 1);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFuncion = async () => {
       try {
         const response = await api.get(`/funcion/${funcionId}`);
-        setFuncion(response.data);
-        setSelectedSala(response.data.salaId);
-        setSelectedHorario(response.data.startTime);
+        setFuncion(response.data.data);
       } catch (error) {
         console.error('Error fetching funcion:', error);
       }
@@ -60,11 +57,10 @@ const PaymentPage = () => {
       return;
     }
 
-    const response = await api.post('/comprartaquilla/purchase', {
+    const response = await api.post('/payment/purchase', {
       userId: user.id,
       funcionId: funcion.id,
-      salaId: selectedSala,
-      horario: selectedHorario,
+      salaId: funcion.salaId,
       cantidadTaquillas: cantidadTaquillas,
       paymentMethodId: paymentMethod.id,
     });
@@ -91,8 +87,8 @@ const PaymentPage = () => {
                 <Card.Body>
                   <Card.Title>Comprar Boletos para {funcion.movie.name}</Card.Title>
                   <Card.Text>
-                    Sala: {funcion.Sala.name}<br />
-                    Horario: {funcion.startTime}
+                    Sala: {funcion.salaId}<br />
+                    Horario: {funcion.startTime}<br />
                   </Card.Text>
                   <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="email">

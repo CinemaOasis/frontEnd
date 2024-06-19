@@ -1,16 +1,14 @@
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Modal } from 'react-bootstrap';
 import api from '../services/api';
 import UserHeader from '../components/usuarioHeader';
 import Header from '../components/header';
-import Footer from "../components/Footer";
+import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import { AuthContext } from '../services/authEmail';
 import WelcomeScreen from '../components/WelcomeScreen';
 import { useNavigate } from 'react-router-dom';
-import MovieDetails from '../components/MovieDetails'; // Asegúrate de que la ruta es correcta
+import MovieDetails from '../components/MovieDetails';
 import '../assets/carteleraStyle.css';
 
 const Cartelera = () => {
@@ -59,9 +57,11 @@ const Cartelera = () => {
     setShowModal(true);
   };
 
-  const handleBuyTickets = () => {
+  const handleBuyTickets = (movieId, isWeekend) => {
+    const funciones = cartelera.filter(funcion => funcion.movieId === movieId && funcion.isWeekend === isWeekend);
+
     if (isAuthenticated) {
-      // Lógica para comprar boletos
+      navigate(`/select-funcion/${movieId}`, { state: { funciones } }); // Pasar solo las funciones filtradas
     } else {
       navigate('/loginForm');
     }
@@ -81,7 +81,6 @@ const Cartelera = () => {
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:00`;
   };
 
-  // Evitamos renderizar la cartelera mientras se muestra la pantalla de bienvenida
   if (showWelcome && isAuthenticated && user) {
     return <WelcomeScreen name={user.name || (user.email && user.email.split('@')[0])} onContinue={handleContinue} />;
   }
@@ -91,7 +90,7 @@ const Cartelera = () => {
       {isAuthenticated && user ? (
         <UserHeader searchTerm={''} setSearchTerm={() => {}} handleSearch={() => {}} userName={user.name || (user.email && user.email.split('@')[0])} />
       ) : (
-        <Header /> // Cambiar al encabezado normal cuando no está autenticado
+        <Header />
       )}
       <Container className="mt-5">
         <Row>
@@ -118,7 +117,7 @@ const Cartelera = () => {
                         </Card.Text>
                         <div className="d-flex justify-content-between">
                           <Button className="custom-button-view-more" onClick={() => handleViewMore(group.movie.id)}>Ver Más</Button>
-                          <Button className="custom-button-buy-tickets" onClick={handleBuyTickets}>Comprar Boletos</Button>
+                          <Button className="custom-button-buy-tickets" onClick={() => handleBuyTickets(group.movie.id, group.funciones[0].isWeekend)}>Comprar Boletos</Button>
                         </div>
                       </Card.Body>
                     </Col>
