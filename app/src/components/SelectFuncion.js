@@ -57,17 +57,38 @@ const SelectFuncion = () => {
       return;
     }
 
-    const response = await api.post('/payment/purchase', {
-      userId: user.id,
-      funcionId: selectedFuncion.id,
-      salaId: selectedFuncion.salaId,
-      cantidadTaquillas: cantidadTaquillas,
-      paymentMethodId: paymentMethod.id,
-    });
+    if (!selectedFuncion || !selectedFuncion.sala || !selectedFuncion.sala.type) {
+      alert('Por favor seleccione una función válida.');
+      return;
+    }
 
-    if (response.data) {
-      navigate('/confirmation');
-    } else {
+    const amount = selectedFuncion.sala.type === "VIP"
+      ? 250 * cantidadTaquillas
+      : 150 * cantidadTaquillas;
+
+    // Validación de monto mínimo
+    const amountInUSD = amount / 56.77; // Suponiendo una tasa de conversión de 1 USD = 56.77 DOP
+    if (amountInUSD < 0.5) {
+      alert("El monto mínimo de compra debe ser al menos 50 centavos en USD.");
+      return;
+    }
+
+    try {
+      const response = await api.post('/payment/purchase', {
+        userId: user.id,
+        funcionId: selectedFuncion.id,
+        salaId: selectedFuncion.salaId,
+        cantidadTaquillas: cantidadTaquillas,
+        paymentMethodId: paymentMethod.id,
+      });
+
+      if (response.data) {
+        navigate('/confirmation');
+      } else {
+        alert('Error al realizar la compra');
+      }
+    } catch (error) {
+      console.error('Error en la compra:', error);
       alert('Error al realizar la compra');
     }
   };
@@ -128,16 +149,16 @@ const SelectFuncion = () => {
                 </Card.Body>
               </Card>
               <Form.Group controlId="cantidad">
-                  <Form.Label>Cantidad de Taquillas</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={cantidadTaquillas}
-                    onChange={(e) => setCantidadTaquillas(e.target.value)}
-                    min="1"
-                    max="5"
-                    required
-                  />
-                </Form.Group>
+                <Form.Label>Cantidad de Taquillas</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={cantidadTaquillas}
+                  onChange={(e) => setCantidadTaquillas(e.target.value)}
+                  min="1"
+                  max="5"
+                  required
+                />
+              </Form.Group>
               <Form onSubmit={handleSubmit} className="payment-form">
                 <Form.Group controlId="email">
                   <Form.Label>Correo Electrónico</Form.Label>
