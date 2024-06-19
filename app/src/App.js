@@ -57,12 +57,37 @@ function Main() {
     const params = new URLSearchParams(location.search);
     const success = params.get('success');
     const email = params.get('email');
-    const name = params.get('name');
+    const token = params.get('token');
 
-    if (success === 'true') {
-      const userData = { email, name };
-      login(userData);
-      navigate('/', { replace: true });
+    if (success === 'true' && token) {
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      api.get('/emailauth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(response => {
+        const userData = {
+          email: response.data.email,
+          name: response.data.name,
+          roles: response.data.roles.map(role => role.name),
+        };
+        login(userData);
+
+        // Actualizar la URL sin parámetros
+        navigate('/', { replace: true });
+
+        if (userData.roles.includes('Admin')) {
+          navigate('/adminPage');
+        } else {
+          navigate('/');
+        }
+      }).catch(error => {
+        console.error('Error fetching user data:', error);
+        localStorage.removeItem('token');
+        navigate('/', { replace: true }); // Redirigir a la página principal en caso de error
+      });
     } else if (success === 'false') {
       // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje en la UI.
     }
