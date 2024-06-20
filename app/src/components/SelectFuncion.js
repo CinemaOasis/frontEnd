@@ -17,15 +17,26 @@ const SelectFuncion = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [cantidadTaquillas, setCantidadTaquillas] = useState(1);
+  const [tipoTaquilla, setTipoTaquilla] = useState('Regular');
+  const [total, setTotal] = useState(150);
   const { isAuthenticated, user } = useContext(AuthContext);
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
 
+  const USD_TO_DOP_CONVERSION_RATE = 59.30;
+  const MIN_USD_AMOUNT = 0.5;
+  const MIN_DOP_AMOUNT = Math.ceil(MIN_USD_AMOUNT * USD_TO_DOP_CONVERSION_RATE); // Redondear hacia arriba para asegurarse de cumplir con el requisito
+
   useEffect(() => {
     const funcionesFromState = location.state?.funciones || [];
     setFunciones(funcionesFromState);
   }, [location.state]);
+
+  useEffect(() => {
+    const pricePerTicket = tipoTaquilla === 'VIP' ? 250 : 150;
+    setTotal(pricePerTicket * cantidadTaquillas);
+  }, [cantidadTaquillas, tipoTaquilla]);
 
   const handleSelectFuncion = (funcion) => {
     setSelectedFuncion(funcion);
@@ -35,6 +46,7 @@ const SelectFuncion = () => {
     e.preventDefault();
 
     if (!stripe || !elements) {
+      alert('Stripe no está completamente cargado. Intenta nuevamente.');
       return;
     }
 
@@ -52,33 +64,37 @@ const SelectFuncion = () => {
     });
 
     if (error) {
-      console.error(error);
-      alert('Error al crear el método de pago');
+      console.error('Error al crear el método de pago:', error);
+      alert('Error al crear el método de pago: ' + error.message);
       return;
     }
 
-    if (!selectedFuncion || !selectedFuncion.sala || !selectedFuncion.sala.type) {
+    if (!selectedFuncion || !selectedFuncion.salaId || !selectedFuncion.movie) {
       alert('Por favor seleccione una función válida.');
       return;
     }
 
-    const amount = selectedFuncion.sala.type === "VIP"
-      ? 250 * cantidadTaquillas
-      : 150 * cantidadTaquillas;
-
-    // Validación de monto mínimo
-    const amountInUSD = amount / 56.77; // Suponiendo una tasa de conversión de 1 USD = 56.77 DOP
-    if (amountInUSD < 0.5) {
-      alert("El monto mínimo de compra debe ser al menos 50 centavos en USD.");
+    if (total < MIN_DOP_AMOUNT) {
+      alert(`El monto mínimo de compra debe ser al menos ${MIN_DOP_AMOUNT} DOP.`);
       return;
     }
 
     try {
+      console.log('Enviando solicitud de compra:', {
+        userId: user.id,
+        funcionId: selectedFuncion.id,
+        salaId: selectedFuncion.salaId,
+        cantidadTaquillas: cantidadTaquillas,
+        tipoTaquilla: tipoTaquilla,
+        paymentMethodId: paymentMethod.id,
+      });
+
       const response = await api.post('/payment/purchase', {
         userId: user.id,
         funcionId: selectedFuncion.id,
         salaId: selectedFuncion.salaId,
         cantidadTaquillas: cantidadTaquillas,
+        tipoTaquilla: tipoTaquilla,
         paymentMethodId: paymentMethod.id,
       });
 
@@ -89,7 +105,7 @@ const SelectFuncion = () => {
       }
     } catch (error) {
       console.error('Error en la compra:', error);
-      alert('Error al realizar la compra');
+      alert('Error al realizar la compra: ' + error.message);
     }
   };
 
@@ -153,13 +169,28 @@ const SelectFuncion = () => {
                 <Form.Control
                   type="number"
                   value={cantidadTaquillas}
-                  onChange={(e) => setCantidadTaquillas(e.target.value)}
+                  onChange={(e) => setCantidadTaquillas(parseInt(e.target.value))}
                   min="1"
                   max="5"
                   required
                 />
               </Form.Group>
-              <Form onSubmit={handleSubmit} className="payment-form">
+              <Form.Group controlId="tipoTaquilla">
+                <Form.Label>Tipo de Taquilla</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={tipoTaquilla}
+                  onChange={(e) => setTipoTaquilla(e.target.value)}
+                  required
+                >
+                  <option value="Regular">Regular</option>
+                  <option value="VIP">VIP</option>
+                </Form.Control>
+              </Form.Group>
+              <div className="mt-3">
+                <strong>Total a Pagar: {total} DOP</strong>
+              </div>
+              <Form onSubmit={handleSubmit} className="payment-form mt-4">
                 <Form.Group controlId="email">
                   <Form.Label>Correo Electrónico</Form.Label>
                   <Form.Control
