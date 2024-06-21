@@ -16,6 +16,7 @@ import PaymentPage from './components/PaymentPage';
 import Proximamente from './pages/Proximamente';
 import SelectFuncion from './components/SelectFuncion'; // Nuevo componente
 import api from './services/api';
+import VerifyQRCodePage from './components/VerifyQRCode';
 import { AuthProvider, AuthContext } from './services/authEmail';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -109,7 +110,7 @@ function Main() {
       <Route path='/proximamente' element={<Proximamente />} />
       <Route path='/select-funcion/:movieId' element={<SelectFuncion />} /> {/* Nueva ruta */}
       <Route path='/payment/:funcionId' element={<PaymentPage />} />
-    </Routes>
+      <Route path='/ticket/:ticketId' element={<VerifyQRCodePage />} /> {/* Nueva ruta */}    </Routes>
   );
 }
 
