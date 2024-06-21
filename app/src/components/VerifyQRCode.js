@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert, Image } from 'react-bootstrap';
 import api from '../services/api';
+import logo from '../assets/Cinema (500 x 200 px).png'; // Importar el logo
+import '../assets/VerifyQRCodePage.css'; // Importar el archivo de estilos CSS
 
 const VerifyQRCodePage = () => {
   const [verificationResult, setVerificationResult] = useState(null);
@@ -34,6 +36,7 @@ const VerifyQRCodePage = () => {
 
   const formatTime = (minutes) => {
     if (isNaN(minutes)) {
+      console.log('Minutos inválidos:', minutes); // Añadir log para verificar los minutos
       return 'Horario desconocido';
     }
     const hours24 = Math.floor(minutes / 60);
@@ -44,25 +47,28 @@ const VerifyQRCodePage = () => {
   };
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-5 verify-qr-container">
       <Row>
         <Col md={12} className="text-center">
-          <h1>Verificación de Código QR</h1>
+          <h1 className="verify-qr-title">Verificación de Código QR</h1>
           {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
           {verificationResult && (
-            <Card className="mt-3">
+            <Card className="mt-3 verify-qr-card">
               <Card.Body>
-                <Card.Title>{verificationResult.compra?.funcion?.movie?.name || 'Película desconocida'}</Card.Title>
-                <Card.Text>
+                <Card.Title className="verify-qr-card-title">{verificationResult.compra?.funcion?.movie?.name || 'Película desconocida'}</Card.Title>
+                <Card.Text className="verify-qr-card-text">
                   Sala: {verificationResult.compra?.funcion?.sala?.name || 'Sala desconocida'}<br />
                   Horario: {verificationResult.compra?.funcion?.startTime ? formatTime(Number(verificationResult.compra.funcion.startTime)) : 'Horario desconocido'}<br />
                   Cantidad de Taquillas: {verificationResult.compra?.cantidadTaquillas || 'Desconocido'}<br />
                   Tipo de Taquilla: {verificationResult.compra?.tipoTaquilla || 'Desconocido'}<br />
                   Estado: {verificationResult.compra?.estadoTransaccion || 'Desconocido'}
                 </Card.Text>
+                <p className="enjoy-movie-message">¡Disfrute la película!</p>
               </Card.Body>
             </Card>
           )}
+          {/* Mostrar el logo debajo de la verificación */}
+          <Image src={logo} alt="Logo" fluid className="mt-4 logo-image" />
         </Col>
       </Row>
     </Container>
