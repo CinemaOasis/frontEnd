@@ -104,4 +104,26 @@ body {
   .register-links a:hover {
     text-decoration: underline;
   }
+
+  .password-container {
+    position: relative;
+  }
+  
+  .password-input-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-container input {
+    flex-grow: 1;
+  }
+  
+  .password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #333;
+  }
   

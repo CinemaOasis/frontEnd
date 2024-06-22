@@ -53,8 +53,14 @@ const Cartelera = () => {
   };
 
   const handleViewMore = (movieId) => {
-    setSelectedMovieId(movieId);
-    setShowModal(true);
+    if (isAuthenticated){
+      setSelectedMovieId(movieId);
+      setShowModal(true);
+    }
+    else {
+      navigate('/loginForm');
+    }
+    
   };
 
   const handleBuyTickets = (movieId, isWeekend) => {

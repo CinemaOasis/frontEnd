@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import api from '../services/api';
 import logo from '../assets/Cinema (500 x 200 px).png'; // Asegúrate de que la ruta del logo es correcta
 import '../assets/registerStyle.css'; // Asegúrate de que la ruta del archivo CSS es correcta
@@ -9,6 +11,8 @@ const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -26,6 +30,14 @@ const RegisterForm = () => {
     } catch (error) {
       setError(error.response?.data?.message || 'Fallo en el registro');
     }
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -56,23 +68,33 @@ const RegisterForm = () => {
               required 
             />
           </div>
-          <div>
+          <div className="password-container">
             <label>Contraseña:</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
-            />
+            <div className="password-input-container">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                required 
+              />
+              <span onClick={toggleShowPassword} className="password-toggle-icon">
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </span>
+            </div>
           </div>
-          <div>
+          <div className="password-container">
             <label>Confirmar Contraseña:</label>
-            <input 
-              type="password" 
-              value={confirmPassword} 
-              onChange={e => setConfirmPassword(e.target.value)} 
-              required 
-            />
+            <div className="password-input-container">
+              <input 
+                type={showConfirmPassword ? "text" : "password"} 
+                value={confirmPassword} 
+                onChange={e => setConfirmPassword(e.target.value)} 
+                required 
+              />
+              <span onClick={toggleShowConfirmPassword} className="password-toggle-icon">
+                <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+              </span>
+            </div>
           </div>
           <button type="submit">Registrarse</button>
           <div className="register-links">

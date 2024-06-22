@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import api from '../services/api';
 import { AuthContext } from '../services/authEmail';
 import logo from '../assets/Cinema (500 x 200 px).png'; // Asegúrate de que la ruta del logo es correcta
@@ -8,6 +10,7 @@ import '../assets/loginStyle.css'; // Asegúrate de que la ruta del archivo CSS 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Estado para controlar la visibilidad de la contraseña
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -53,6 +56,10 @@ const LoginForm = () => {
     }
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="login-container">
       <div className="login-content">
@@ -69,16 +76,23 @@ const LoginForm = () => {
               value={email} 
               onChange={e => setEmail(e.target.value)} 
               required 
+              placeholder="Introduce tu email"
             />
           </div>
-          <div>
+          <div className="password-container">
             <label>Contraseña:</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
-            />
+            <div className="password-input-container">
+              <input 
+                type={showPassword ? "text" : "password"} // Cambiar tipo de entrada basado en showPassword
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                required 
+                placeholder="Introduce tu contraseña"
+              />
+              <span onClick={toggleShowPassword} className="password-toggle-icon">
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </span>
+            </div>
           </div>
           <button type="submit">Acceder</button>
           <div className="login-links">
