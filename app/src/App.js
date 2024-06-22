@@ -18,6 +18,7 @@ import SelectFuncion from './components/SelectFuncion'; // Nuevo componente
 import api from './services/api';
 import VerifyQRCodePage from './components/VerifyQRCode';
 import { AuthProvider, AuthContext } from './services/authEmail';
+import ForgotPasswordForm from './components/ForgotPasswordForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const stripePromise = loadStripe('pk_test_51PSWWOKTvKKZFxxj4GPaec7bKRE5hw7I9S1lVrcSstAKZnI8irlGecs2t29ixBD5JJrFzHEJRt6G6lQfZ29aFINV00SzJ5zJPV'); // Reemplaza con tu clave pública de Stripe
@@ -110,7 +111,8 @@ function Main() {
       <Route path='/proximamente' element={<Proximamente />} />
       <Route path='/select-funcion/:movieId' element={<SelectFuncion />} /> {/* Nueva ruta */}
       <Route path='/payment/:funcionId' element={<PaymentPage />} />
-      <Route path='/ticket/:ticketId' element={<VerifyQRCodePage />} /> {/* Nueva ruta */}    </Routes>
+      <Route path='/ticket/:ticketId' element={<VerifyQRCodePage />} /> {/* Nueva ruta */} 
+      <Route path="/forgot-password" element={<ForgotPasswordForm />} />    </Routes>
   );
 }
 
