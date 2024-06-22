@@ -46,6 +46,20 @@ const VerifyQRCodePage = () => {
     return `${hours12}:${mins} ${ampm}`;
   };
 
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'America/Santo_Domingo'
+    };
+    return date.toLocaleString('es-ES', options);
+  };
+
   return (
     <Container className="mt-5 verify-qr-container">
       <Row>
@@ -61,7 +75,8 @@ const VerifyQRCodePage = () => {
                   Horario: {verificationResult.compra?.funcion?.startTime ? formatTime(Number(verificationResult.compra.funcion.startTime)) : 'Horario desconocido'}<br />
                   Cantidad de Taquillas: {verificationResult.compra?.cantidadTaquillas || 'Desconocido'}<br />
                   Tipo de Taquilla: {verificationResult.compra?.tipoTaquilla || 'Desconocido'}<br />
-                  Estado: {verificationResult.compra?.estadoTransaccion || 'Desconocido'}
+                  Estado: {verificationResult.compra?.estadoTransaccion || 'Desconocido'}<br />
+                  Fecha y Hora de Pago: {verificationResult.compra?.fechaHoraCompra ? formatDateTime(verificationResult.compra.fechaHoraCompra) : 'Desconocido'}
                 </Card.Text>
                 <p className="enjoy-movie-message">¡Disfrute la película!</p>
               </Card.Body>
