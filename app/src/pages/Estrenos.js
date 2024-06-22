@@ -117,9 +117,8 @@ const Estrenos = () => {
                           {group.funciones.some(funcion => funcion.isWeekend) && <Badge bg="info" text="dark">Fin de Semana</Badge>}
                         </Card.Text>
                         <div className="d-flex justify-content-between">
-                          <Button className="custom-button-view-more" onClick={() => handleViewMore(group.movie.id)}>Ver Más</Button>
-                          <Button className="custom-button-buy-tickets" onClick={handleBuyTickets}>Comprar Boletos</Button>
-                        </div>
+                        <Button className="custom-button-view-more" onClick={() => handleViewMore(group.movie.id)}>Ver Más</Button>
+                        <Button className="custom-button-buy-tickets" onClick={() => handleBuyTickets(group.movie.id, group.funciones[0].isWeekend)}>Comprar Boletos</Button>                        </div>
                       </Card.Body>
                     </Col>
                   </Row>
