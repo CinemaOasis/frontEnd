@@ -132,7 +132,7 @@ const Estrenos = () => {
               </Col>
             ))
           ) : (
-            <p>No hay funciones disponibles</p>
+            <p>No hay ninguna película en estreno</p>
           )}
         </Row>
       </Container>
