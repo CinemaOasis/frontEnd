@@ -26,7 +26,7 @@ const RegisterForm = () => {
     try {
       const response = await api.post('http://localhost:8888/api/v1/emailauth/register', { name, email, password });
       setMessage(response.data.message);
-      navigate('/confirmation');  // Redirige a una página de confirmación
+      window.location.href = 'https://mail.google.com';  // Redirige a Gmail
     } catch (error) {
       setError(error.response?.data?.message || 'Fallo en el registro');
     }

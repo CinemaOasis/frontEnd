@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from '../services/authEmail';
-import api from '../services/api';
 
 const ConfirmEmail = () => {
   const navigate = useNavigate();
@@ -14,9 +12,10 @@ const ConfirmEmail = () => {
     const success = params.get('success');
     const email = params.get('email');
     const name = params.get('name');
+    const token = params.get('token');
 
     if (success === 'true') {
-      const userData = { email, name, token: params.get('token') };
+      const userData = { email, name, token };
       login(userData);
       navigate('/', { replace: true });
     } else if (success === 'false') {

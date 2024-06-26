@@ -66,7 +66,7 @@ const PaymentPage = () => {
     });
 
     if (response.data) {
-      navigate('/confirmation');
+      navigate('/cartelera');
     } else {
       alert('Error al realizar la compra');
     }

@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        console.log('Token al cargar:', token); // Verificar token al cargar
+        console.log('Token al cargar:', token);
         if (token) {
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             api.get('/emailauth/user')
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
                 })
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
-                    localStorage.removeItem('token'); // Eliminar token si es inválido
+                    localStorage.removeItem('token');
                 });
         }
     }, []);
@@ -28,11 +28,11 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => {
         const token = userData.token;
         setIsAuthenticated(true);
-        setUser(userData.user); // Asegúrate de que esta línea acceda correctamente al objeto usuario
-        localStorage.setItem('user', JSON.stringify(userData.user));
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('token', token);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Token después del login:', token); // Verificar token después del login
+        console.log('Token después del login:', token);
     };
 
     const logout = () => {
