@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
             api.get('/emailauth/user')
                 .then((response) => {
                     console.log('Datos del usuario:', response.data);
-                    setUser(response.data);
+                    setUser(response.data.user);
                     setIsAuthenticated(true);
                 })
                 .catch((error) => {
@@ -28,8 +28,8 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => {
         const token = userData.token;
         setIsAuthenticated(true);
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData.user);
+        localStorage.setItem('user', JSON.stringify(userData.user));
         localStorage.setItem('token', token);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         console.log('Token después del login:', token);
