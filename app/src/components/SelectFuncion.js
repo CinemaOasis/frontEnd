@@ -19,6 +19,7 @@ const SelectFuncion = () => {
   const [cantidadTaquillas, setCantidadTaquillas] = useState(1);
   const [tipoTaquilla, setTipoTaquilla] = useState('Regular');
   const [total, setTotal] = useState(150);
+  const [error, setError] = useState('');
   const { isAuthenticated, user } = useContext(AuthContext);
   const stripe = useStripe();
   const elements = useElements();
@@ -42,11 +43,37 @@ const SelectFuncion = () => {
     setSelectedFuncion(funcion);
   };
 
+  const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value);
+    if (isNaN(value) || value < 1 || value > 5) {
+      setError('La cantidad de taquillas debe estar entre 1 y 5.');
+      setCantidadTaquillas(1);
+    } else {
+      setError('');
+      setCantidadTaquillas(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
       alert('Stripe no está completamente cargado. Intenta nuevamente.');
+      return;
+    }
+
+    if (!selectedFuncion || !selectedFuncion.salaId || !selectedFuncion.movie) {
+      alert('Por favor seleccione una función válida.');
+      return;
+    }
+
+    if (cantidadTaquillas < 1 || cantidadTaquillas > 5) {
+      alert('La cantidad de taquillas debe estar entre 1 y 5.');
+      return;
+    }
+
+    if (total < MIN_DOP_AMOUNT) {
+      alert(`El monto mínimo de compra debe ser al menos ${MIN_DOP_AMOUNT} DOP.`);
       return;
     }
 
@@ -66,16 +93,6 @@ const SelectFuncion = () => {
     if (error) {
       console.error('Error al crear el método de pago:', error);
       alert('Error al crear el método de pago: ' + error.message);
-      return;
-    }
-
-    if (!selectedFuncion || !selectedFuncion.salaId || !selectedFuncion.movie) {
-      alert('Por favor seleccione una función válida.');
-      return;
-    }
-
-    if (total < MIN_DOP_AMOUNT) {
-      alert(`El monto mínimo de compra debe ser al menos ${MIN_DOP_AMOUNT} DOP.`);
       return;
     }
 
@@ -169,12 +186,13 @@ const SelectFuncion = () => {
                 <Form.Control
                   type="number"
                   value={cantidadTaquillas}
-                  onChange={(e) => setCantidadTaquillas(parseInt(e.target.value))}
+                  onChange={handleQuantityChange}
                   min="1"
                   max="5"
                   required
                 />
               </Form.Group>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
               <Form.Group controlId="tipoTaquilla">
                 <Form.Label>Tipo de Taquilla</Form.Label>
                 <Form.Control

@@ -1,0 +1,27 @@
+.list-group-container {
+  margin-bottom: 60px; /* Ajusta el valor según sea necesario */
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item-text {
+  flex-grow: 1;
+  margin-right: 20px;
+  word-break: break-word;
+}
+
+.list-group-item-buttons {
+  white-space: nowrap;
+}
+
+.list-group-item-buttons button {
+    margin-left: 10px; /* Añadir margen entre los botones */
+  }
+
+.mt-custom {
+  margin-top: 20px;
+}

@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../services/api';
 import AdminHeader from '../components/adminHeader';  // Ajusta la ruta según sea necesario
+import '../assets/adminPageStyle.css'; // Asegúrate de incluir los estilos CSS personalizados
 
 const AdminPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -185,7 +186,7 @@ const AdminPage = () => {
         handleSearch={handleSearch} 
         userName={userName} 
       />
-      <Container className="mt-5 pt-5"> {/* Ajusta para la barra de navegación fija */}
+      <Container className="mt-5 pt-5 mt-custom"> {/* Ajusta para la barra de navegación fija */}
         <ToastContainer />
         <Row>
           {searchResults.length > 0 && searchResults.map((movie) => (
@@ -254,13 +255,17 @@ const AdminPage = () => {
               <ListGroup>
                 {cartelera.map((funcion) => (
                   <ListGroup.Item key={funcion.id}>
-                    {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''} {funcion.isWeekend ? '- Fin de Semana' : ''}
-                    <Button variant="warning" className="ml-3" onClick={() => handleEditFunction(funcion)}>
-                      Editar
-                    </Button>
-                    <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
-                      Eliminar
-                    </Button>
+                    <span className="list-group-item-text">
+                      {funcion.movie?.name || 'N/A'} - Sala: {funcion.salaId} - Comienza: {formatTime(funcion.startTime)} - Termina: {formatTime(funcion.endTime)} - Estado: {funcion.status} {funcion.isPremiere ? '- Estreno' : ''} {funcion.isWeekend ? '- Fin de Semana' : ''}
+                    </span>
+                    <span className="list-group-item-buttons">
+                      <Button variant="warning" className="ml-3" onClick={() => handleEditFunction(funcion)}>
+                        Editar
+                      </Button>
+                      <Button variant="danger" className="ml-3" onClick={() => handleDeleteFromCartelera(funcion.id)}>
+                        Eliminar
+                      </Button>
+                    </span>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
