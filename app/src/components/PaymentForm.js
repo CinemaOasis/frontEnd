@@ -114,16 +114,19 @@ const PaymentPage = () => {
                       />
                     </Form.Group>
                     <Form.Group controlId="cantidad">
-                      <Form.Label>Cantidad de Taquillas</Form.Label>
-                      <Form.Control
-                        type="number"
-                        value={cantidadTaquillas}
-                        onChange={(e) => setCantidadTaquillas(e.target.value)}
-                        min="1"
-                        max="5"
-                        required
-                      />
-                    </Form.Group>
+  <Form.Label>Cantidad de Taquillas</Form.Label>
+  <Form.Control
+    type="number"
+    value={cantidadTaquillas}
+    onChange={(e) => {
+      const value = e.target.value;
+      setCantidadTaquillas(value ? parseInt(value, 10) : 0);
+    }}
+    min="1"
+    max="5"
+    required
+  />
+</Form.Group>
                     <Form.Group controlId="card">
                       <Form.Label>Información de la Tarjeta</Form.Label>
                       <CardElement />

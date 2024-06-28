@@ -65,9 +65,11 @@ const Estrenos = () => {
     
   };
 
-  const handleBuyTickets = () => {
+  const handleBuyTickets = (movieId, isWeekend) => {
+    const funciones = cartelera.filter(funcion => funcion.movieId === movieId && funcion.isWeekend === isWeekend);
+
     if (isAuthenticated) {
-      // Lógica para comprar boletos
+      navigate(`/select-funcion/${movieId}`, { state: { funciones } }); // Pasar solo las funciones filtradas
     } else {
       navigate('/loginForm');
     }
