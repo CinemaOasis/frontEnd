@@ -43,18 +43,25 @@ const LoginForm = () => {
       }
     } catch (error) {
       if (error.response) {
-        if (error.response.status === 400) {
-          setError('Solicitud incorrecta. Por favor, revisa los datos ingresados.');
-        } else if (error.response.status === 401 || error.response.status === 403) {
-          setError('Correo electrónico o contraseña incorrectos');
-        } else {
-          setError(error.response.data.message || 'Error al iniciar sesión');
+        switch (error.response.status) {
+          case 400:
+            setError('Solicitud incorrecta. El correo o la contraseña son incorrecto.');
+            break;
+          case 401:
+            setError('Correo electrónico o contraseña incorrectos');
+            break;
+          case 404:
+            setError('Correo electrónico no encontrado');
+            break;
+          default:
+            setError(error.response.data.message || 'Error al iniciar sesión');
         }
       } else {
         setError('Error al iniciar sesión');
       }
     }
   };
+
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);

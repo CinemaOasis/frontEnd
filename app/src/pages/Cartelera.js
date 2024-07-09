@@ -31,7 +31,7 @@ const Cartelera = () => {
       setCartelera(funciones);
       groupCartelera(funciones);
     } catch (error) {
-      console.error('Error fetching cartelera:', error);
+      console.error('Error al buscar cartelera:', error);
     }
   };
 

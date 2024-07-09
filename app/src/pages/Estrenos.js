@@ -33,7 +33,7 @@ const Estrenos = () => {
       setCartelera(estrenos);
       groupCartelera(estrenos);
     } catch (error) {
-      console.error('Error fetching cartelera:', error);
+      console.error('Error al buscar cartelera:', error);
     }
   };
 

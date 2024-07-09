@@ -119,8 +119,8 @@ const AdminPage = () => {
       const response = await api.get('/funcion');
       setCartelera(response.data.data);
     } catch (error) {
-      console.error('Error fetching cartelera:', error);
-      toast.error('Error fetching cartelera');
+      console.error('Error al buscar cartelera:', error);
+      toast.error('Error al buscar cartelera');
     }
   };
 
