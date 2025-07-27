@@ -29,7 +29,7 @@ const AdminPage = () => {
     try {
       const response = await api.post('/emailauth/login', {
         email: 'wanderdj77@gmail.com',
-        password: '123456789',
+        password: 'adminadmin',
       });
       const { token, name } = response.data.data;
       localStorage.setItem('token', token);
